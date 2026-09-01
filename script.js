@@ -1,11 +1,11 @@
 /**
- * Kudla Suttu - Open Local Utility Map for Mangalore/Kudla
+ * Kudla Suttu - Bespoke Coastal Mangalore Explorer Engine
  * Powered by OpenStreetMap & Leaflet.js
  */
 
 // Core Configuration
 const MANGALORE_CONFIG = {
-  center: [12.9141, 74.8560], // Mangalore City Center / Hampankatta
+  center: [12.9141, 74.8560], // Hampankatta / Mangalore City Center
   defaultZoom: 14,
   minZoom: 11,
   maxZoom: 19,
@@ -27,57 +27,57 @@ const MANGALORE_CONFIG = {
 const CATEGORIES = {
   hardware: {
     id: 'hardware',
-    name: 'Hardware & Supplies',
+    name: 'Hardware & Tools',
     icon: '🔧',
-    color: '#c05621'
+    color: '#ba5122'
   },
   repair: {
     id: 'repair',
     name: 'Repair Services',
     icon: '⚙️',
-    color: '#2b6cb0'
+    color: '#236bb0'
   },
   stationery: {
     id: 'stationery',
     name: 'Stationery & Xerox',
     icon: '📚',
-    color: '#276749'
+    color: '#1e7049'
   },
   pharmacy: {
     id: 'pharmacy',
-    name: 'Pharmacies & Clinics',
+    name: 'Pharmacies',
     icon: '💊',
-    color: '#c53030'
+    color: '#be2626'
   },
   toilet: {
     id: 'toilet',
     name: 'Public Toilets',
     icon: '🚻',
-    color: '#007791'
+    color: '#007d96'
   },
   water: {
     id: 'water',
-    name: 'Drinking Water Points',
+    name: 'Drinking Water',
     icon: '💧',
-    color: '#0284c7'
+    color: '#0280c2'
   },
   bus: {
     id: 'bus',
-    name: 'Bus Stops & Transit',
+    name: 'Bus Stops',
     icon: '🚌',
-    color: '#6b46c1'
+    color: '#693eb8'
   },
   food: {
     id: 'food',
-    name: 'Budget & Student Food',
+    name: 'Budget Food',
     icon: '☕',
-    color: '#dd6b20'
+    color: '#cc5e1b'
   }
 };
 
-// Curated Mangalore Everyday Utility Seed Data
+// Curated Seed Data for instant offline/guaranteed availability
 const MANGALORE_SEED_DATA = [
-  // Hardware
+  // Hardware & Supplies
   {
     id: 'seed-h1',
     osmType: 'node',
@@ -139,7 +139,7 @@ const MANGALORE_SEED_DATA = [
     tags: { 'shop': 'hardware' }
   },
 
-  // Repair
+  // Repair Services
   {
     id: 'seed-r1',
     osmType: 'node',
@@ -231,7 +231,7 @@ const MANGALORE_SEED_DATA = [
     tags: { 'shop': 'copyshop' }
   },
 
-  // Pharmacy
+  // Pharmacies
   {
     id: 'seed-p1',
     osmType: 'node',
@@ -366,7 +366,7 @@ const MANGALORE_SEED_DATA = [
     tags: { 'highway': 'bus_stop' }
   },
 
-  // Budget & Student Food
+  // Budget Food
   {
     id: 'seed-f1',
     osmType: 'node',
@@ -412,7 +412,7 @@ const state = {
   osmSource: 'cached'
 };
 
-// Map & Layer Variables
+// Map & Layer References
 let map = null;
 let markersLayerGroup = null;
 let userMarker = null;
@@ -422,6 +422,7 @@ const markerMap = new Map();
  * Initialize on DOM Ready
  */
 document.addEventListener('DOMContentLoaded', () => {
+  initScrollEntrance();
   initMap();
   initPlacesData();
   bindUIEvents();
@@ -430,7 +431,63 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /**
- * Setup Leaflet Map
+ * 1. THEATRICAL PARCHMENT SCROLL ENTRANCE LOGIC
+ */
+function initScrollEntrance() {
+  const overlay = document.getElementById('scroll-overlay');
+  const scrollEl = document.getElementById('parchment-scroll');
+  const btnPullThread = document.getElementById('btn-pull-thread');
+  const btnUnrollExplore = document.getElementById('btn-unroll-explore');
+  const skipCheckbox = document.getElementById('skip-scroll-next-time');
+  const btnReopenScroll = document.getElementById('btn-reopen-scroll');
+
+  const hasSkipped = localStorage.getItem('kudla_skip_scroll') === 'true';
+
+  if (hasSkipped) {
+    overlay.classList.add('hidden');
+  } else {
+    overlay.classList.remove('hidden');
+    scrollEl.classList.add('rolled');
+    scrollEl.classList.remove('unrolled');
+  }
+
+  // Pull ribbon action -> unroll scroll
+  function unrollScroll() {
+    scrollEl.classList.remove('rolled');
+    scrollEl.classList.add('unrolled');
+  }
+
+  btnPullThread.addEventListener('click', unrollScroll);
+
+  // Unroll & Explore map action -> dismiss overlay into map
+  btnUnrollExplore.addEventListener('click', () => {
+    if (skipCheckbox.checked) {
+      localStorage.setItem('kudla_skip_scroll', 'true');
+    }
+    overlay.classList.add('hidden');
+    if (map) {
+      map.invalidateSize();
+      map.flyTo(MANGALORE_CONFIG.center, MANGALORE_CONFIG.defaultZoom, { duration: 1.2 });
+    }
+  });
+
+  // Reopen scroll anytime from topbar badge
+  btnReopenScroll.addEventListener('click', () => {
+    overlay.classList.remove('hidden');
+    scrollEl.classList.remove('rolled');
+    scrollEl.classList.add('unrolled');
+  });
+
+  // Clicking backdrop dims closes if already unrolled
+  overlay.addEventListener('click', (e) => {
+    if (e.target.classList.contains('scroll-backdrop-dim') && scrollEl.classList.contains('unrolled')) {
+      overlay.classList.add('hidden');
+    }
+  });
+}
+
+/**
+ * 2. LEAFLET MAP INITIALIZATION
  */
 function initMap() {
   map = L.map('map', {
@@ -438,16 +495,19 @@ function initMap() {
     zoom: MANGALORE_CONFIG.defaultZoom,
     minZoom: MANGALORE_CONFIG.minZoom,
     maxZoom: MANGALORE_CONFIG.maxZoom,
-    zoomControl: true
+    zoomControl: false // custom position
   });
 
-  // OpenStreetMap Standard Tiles
+  // Add Zoom Control on bottom-right
+  L.control.zoom({ position: 'bottomright' }).addTo(map);
+
+  // OSM Standard Layer
   const osmStandard = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors',
     maxZoom: 19
   }).addTo(map);
 
-  // Carto Light Clean Tiles Option
+  // Carto Positron Light Layer
   const cartoPositron = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
     attribution: '&copy; <a href="https://carto.com/">CARTO</a> &copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>',
     maxZoom: 19
@@ -455,7 +515,7 @@ function initMap() {
 
   L.control.layers({
     'OpenStreetMap Standard': osmStandard,
-    'Carto Clean Light': cartoPositron
+    'Carto Light': cartoPositron
   }, null, { position: 'topright' }).addTo(map);
 
   markersLayerGroup = L.layerGroup().addTo(map);
@@ -465,20 +525,17 @@ function initMap() {
 }
 
 /**
- * Seed data init & live Overpass query trigger
+ * 3. PLACES DATA INITIALIZATION & OVERPASS FETCH
  */
 function initPlacesData() {
   state.places = [...MANGALORE_SEED_DATA];
-  updateStatusPill('cached', `${state.places.length} places (Kudla Seed)`);
+  updateStatusBadge('cached', `${state.places.length} Kudla Places`);
   fetchOverpassData();
 }
 
-/**
- * Query Overpass API for Mangalore area
- */
 async function fetchOverpassData() {
   state.isLoadingOSM = true;
-  updateStatusPill('loading', 'Syncing live OpenStreetMap...');
+  updateStatusBadge('loading', 'Syncing OpenStreetMap...');
 
   const { south, west, north, east } = MANGALORE_CONFIG.bbox;
   const bboxStr = `${south},${west},${north},${east}`;
@@ -555,21 +612,17 @@ async function fetchOverpassData() {
     
     state.places = [...parsed, ...extraSeeds];
     state.osmSource = 'live';
-    updateStatusPill('live', `${state.places.length} places (Live OSM)`);
-    showToast(`Loaded ${state.places.length} utility places from OpenStreetMap!`);
+    updateStatusBadge('live', `${state.places.length} Live OSM Places`);
+    showToast(`Loaded ${state.places.length} places from OpenStreetMap!`);
   } else {
     state.osmSource = 'cached';
-    updateStatusPill('cached', `${state.places.length} places (Curated Kudla Data)`);
-    showToast('Using curated Mangalore local directory.');
+    updateStatusBadge('cached', `${state.places.length} Kudla Places (Seed)`);
   }
 
   renderCategoryCounts();
   applyFiltersAndRender();
 }
 
-/**
- * Normalizes OSM raw elements
- */
 function normalizeOSMElements(elements) {
   return elements.map(el => {
     const tags = el.tags || {};
@@ -608,9 +661,6 @@ function normalizeOSMElements(elements) {
   }).filter(Boolean);
 }
 
-/**
- * Maps OSM tags to our 8 core categories
- */
 function determineCategory(tags) {
   if (tags.amenity === 'drinking_water') return 'water';
   if (tags.amenity === 'toilets') return 'toilet';
@@ -644,23 +694,20 @@ function determineCategory(tags) {
   return null;
 }
 
-/**
- * Fallback name helper
- */
 function fallbackName(tags, catKey) {
   if (catKey === 'water') return 'Public Drinking Water Point';
   if (catKey === 'toilet') return 'Public Toilet';
   if (catKey === 'bus') return tags.bus_stop || 'Bus Stop';
-  if (catKey === 'hardware') return 'Hardware & Tools Shop';
+  if (catKey === 'hardware') return 'Hardware & Tools Store';
   if (catKey === 'repair') return 'Repair & Service Shop';
   if (catKey === 'pharmacy') return 'Pharmacy & Medical Store';
   if (catKey === 'stationery') return 'Stationery & Xerox';
-  if (catKey === 'food') return 'Local Food / Snacks';
-  return 'Local Utility Facility';
+  if (catKey === 'food') return 'Local Eatery / Refreshments';
+  return 'Local Utility Point';
 }
 
 /**
- * Bind UI Listeners
+ * 4. UI EVENT BINDINGS
  */
 function bindUIEvents() {
   const searchInput = document.getElementById('search-input');
@@ -680,12 +727,12 @@ function bindUIEvents() {
     applyFiltersAndRender();
   });
 
-  // Category filter chips
+  // Categories Dock chips
   document.getElementById('category-chips').addEventListener('click', (e) => {
-    const chip = e.target.closest('.chip');
+    const chip = e.target.closest('.dock-chip');
     if (!chip) return;
 
-    document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+    document.querySelectorAll('.dock-chip').forEach(c => c.classList.remove('active'));
     chip.classList.add('active');
 
     state.activeCategory = chip.dataset.category;
@@ -698,13 +745,19 @@ function bindUIEvents() {
     applyFiltersAndRender();
   });
 
-  // Reset filters
+  // Drawer collapse toggle
+  const drawer = document.getElementById('places-drawer');
+  document.getElementById('btn-drawer-collapse').addEventListener('click', () => {
+    drawer.classList.toggle('collapsed');
+  });
+
+  // Reset Filters in empty state
   document.getElementById('btn-reset-filters').addEventListener('click', () => {
     state.activeCategory = 'all';
     state.searchQuery = '';
     searchInput.value = '';
     searchClear.style.display = 'none';
-    document.querySelectorAll('.chip').forEach(c => {
+    document.querySelectorAll('.dock-chip').forEach(c => {
       c.classList.toggle('active', c.dataset.category === 'all');
     });
     applyFiltersAndRender();
@@ -714,30 +767,19 @@ function bindUIEvents() {
   document.getElementById('btn-locate').addEventListener('click', locateUser);
 
   // Sync OSM
-  document.getElementById('btn-sync').addEventListener('click', () => {
-    fetchOverpassData();
-  });
+  document.getElementById('btn-sync').addEventListener('click', fetchOverpassData);
 
-  // Contribution Modal Triggers
+  // Contribution Modal Dialog
   const modal = document.getElementById('contrib-modal');
-  document.getElementById('btn-toggle-contrib').addEventListener('click', () => {
-    modal.style.display = 'flex';
-  });
-  document.getElementById('btn-close-modal').addEventListener('click', () => {
-    modal.style.display = 'none';
-  });
+  document.getElementById('btn-open-contrib-modal').addEventListener('click', () => modal.style.display = 'flex');
+  document.getElementById('btn-drawer-edit-osm').addEventListener('click', () => modal.style.display = 'flex');
+  document.getElementById('btn-close-modal').addEventListener('click', () => modal.style.display = 'none');
   modal.addEventListener('click', (e) => {
     if (e.target === modal) modal.style.display = 'none';
   });
 
-  // Direct OSM Edit links
-  document.getElementById('btn-edit-osm-center').addEventListener('click', () => {
-    const center = map.getCenter();
-    const zoom = Math.max(17, map.getZoom());
-    window.open(`https://www.openstreetmap.org/edit#map=${zoom}/${center.lat.toFixed(5)}/${center.lng.toFixed(5)}`, '_blank', 'noopener');
-  });
-
-  document.getElementById('btn-float-add').addEventListener('click', () => {
+  // Floating map actions
+  document.getElementById('btn-add-here').addEventListener('click', () => {
     const center = map.getCenter();
     const zoom = Math.max(17, map.getZoom());
     window.open(`https://www.openstreetmap.org/edit#map=${zoom}/${center.lat.toFixed(5)}/${center.lng.toFixed(5)}`, '_blank', 'noopener');
@@ -748,23 +790,10 @@ function bindUIEvents() {
     const zoom = Math.max(16, map.getZoom());
     window.open(`https://www.openstreetmap.org/note/new#map=${zoom}/${center.lat.toFixed(5)}/${center.lng.toFixed(5)}`, '_blank', 'noopener');
   });
-
-  // Mobile Drawer Toggle
-  const mobileToggleBtn = document.getElementById('btn-mobile-toggle');
-  const sidebar = document.getElementById('sidebar');
-  const toggleText = document.getElementById('mobile-toggle-text');
-
-  if (mobileToggleBtn) {
-    mobileToggleBtn.addEventListener('click', () => {
-      sidebar.classList.toggle('collapsed');
-      const isCollapsed = sidebar.classList.contains('collapsed');
-      toggleText.textContent = isCollapsed ? 'View Places List' : 'Hide Places List';
-    });
-  }
 }
 
 /**
- * Filter, Sort, and Render UI
+ * 5. FILTER, SORT & RENDER
  */
 function applyFiltersAndRender() {
   let list = state.places.filter(place => {
@@ -797,15 +826,15 @@ function applyFiltersAndRender() {
 
   state.filteredPlaces = list;
 
-  renderSidebarCards(list);
+  renderDrawerCards(list);
   renderMapPins(list);
-  updateResultCounts(list.length);
+  updateResultCount(list.length);
 }
 
 /**
- * Render Sidebar Cards
+ * 6. RENDER DRAWER CARDS
  */
-function renderSidebarCards(places) {
+function renderDrawerCards(places) {
   const container = document.getElementById('places-list');
   const emptyState = document.getElementById('empty-state');
 
@@ -826,7 +855,7 @@ function renderSidebarCards(places) {
     return `
       <div class="place-card ${isSelected ? 'selected' : ''}" data-id="${place.id}" role="listitem">
         <div class="card-top">
-          <span class="category-badge ${place.category}">
+          <span class="category-tag ${place.category}">
             <span>${cat.icon}</span>
             <span>${cat.name}</span>
           </span>
@@ -834,14 +863,14 @@ function renderSidebarCards(places) {
         </div>
 
         <div>
-          <h3 class="card-title">${escapeHTML(place.name)}</h3>
-          ${place.nameKn ? `<div class="card-kn-name">${escapeHTML(place.nameKn)}</div>` : ''}
+          <h4 class="card-title">${escapeHTML(place.name)}</h4>
+          ${place.nameKn ? `<div class="card-kn">${escapeHTML(place.nameKn)}</div>` : ''}
         </div>
 
-        <div class="card-meta">
+        <div class="card-details">
           ${place.street ? `
-            <div class="meta-row">
-              <svg class="meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <div class="card-row">
+              <svg class="card-row-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
               </svg>
               <span>${escapeHTML(place.street)}</span>
@@ -849,8 +878,8 @@ function renderSidebarCards(places) {
           ` : ''}
 
           ${place.openingHours ? `
-            <div class="meta-row">
-              <svg class="meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <div class="card-row">
+              <svg class="card-row-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
               </svg>
               <span>${escapeHTML(place.openingHours)}</span>
@@ -858,29 +887,29 @@ function renderSidebarCards(places) {
           ` : ''}
 
           ${place.phone ? `
-            <div class="meta-row">
-              <svg class="meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <div class="card-row">
+              <svg class="card-row-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
               </svg>
-              <a href="tel:${escapeHTML(place.phone)}" class="btn-link">${escapeHTML(place.phone)}</a>
+              <a href="tel:${escapeHTML(place.phone)}" class="card-btn-link">${escapeHTML(place.phone)}</a>
             </div>
           ` : ''}
         </div>
 
         <div class="card-actions">
-          <button class="card-btn primary btn-focus-marker" data-id="${place.id}">
+          <button class="card-act-btn primary btn-focus-marker" data-id="${place.id}">
             <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2">
               <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
             </svg>
             Show on Map
           </button>
           
-          <a href="${directionsUrl}" target="_blank" rel="noopener" class="card-btn" title="Get Directions">
+          <a href="${directionsUrl}" target="_blank" rel="noopener" class="card-act-btn" title="Get Directions">
             Directions
           </a>
 
-          <a href="${osmEditUrl}" target="_blank" rel="noopener" class="card-btn" title="Edit details on OpenStreetMap">
-            Edit on OSM
+          <a href="${osmEditUrl}" target="_blank" rel="noopener" class="card-act-btn" title="Edit on OpenStreetMap">
+            Edit OSM
           </a>
         </div>
       </div>
@@ -889,7 +918,6 @@ function renderSidebarCards(places) {
 
   container.innerHTML = html;
 
-  // Event handlers on cards
   container.querySelectorAll('.place-card').forEach(card => {
     card.addEventListener('click', (e) => {
       if (e.target.tagName === 'A') return;
@@ -906,7 +934,7 @@ function renderSidebarCards(places) {
 }
 
 /**
- * Render Map Pins
+ * 7. RENDER MAP PINS
  */
 function renderMapPins(places) {
   markersLayerGroup.clearLayers();
@@ -916,7 +944,7 @@ function renderMapPins(places) {
     const cat = CATEGORIES[place.category] || { icon: '📍' };
 
     const icon = L.divIcon({
-      className: 'marker-wrapper',
+      className: 'marker-wrap',
       html: `<div class="custom-map-marker ${place.category}" title="${escapeHTML(place.name)}">${cat.icon}</div>`,
       iconSize: [32, 32],
       iconAnchor: [16, 16],
@@ -935,9 +963,6 @@ function renderMapPins(places) {
   });
 }
 
-/**
- * Popup Content
- */
 function createPopupHTML(place) {
   const cat = CATEGORIES[place.category] || { name: 'Utility', icon: '📍' };
   const osmUrl = place.osmId 
@@ -948,7 +973,7 @@ function createPopupHTML(place) {
 
   return `
     <div class="popup-container">
-      <span class="category-badge ${place.category}">
+      <span class="category-tag ${place.category}">
         <span>${cat.icon}</span>
         <span>${cat.name}</span>
       </span>
@@ -958,18 +983,18 @@ function createPopupHTML(place) {
       <div class="popup-meta">
         ${place.street ? `<div>📍 ${escapeHTML(place.street)}</div>` : ''}
         ${place.openingHours ? `<div>🕒 ${escapeHTML(place.openingHours)}</div>` : ''}
-        ${place.phone ? `<div>📞 <a href="tel:${escapeHTML(place.phone)}" class="btn-link">${escapeHTML(place.phone)}</a></div>` : ''}
-        ${place.distanceText ? `<div>🧭 <strong>${place.distanceText} away</strong></div>` : ''}
+        ${place.phone ? `<div>📞 <a href="tel:${escapeHTML(place.phone)}" class="card-btn-link">${escapeHTML(place.phone)}</a></div>` : ''}
+        ${place.distanceText ? `<div>🧭 <strong>${place.distanceText} from you</strong></div>` : ''}
       </div>
 
       <div class="popup-actions">
-        <a href="${directionsUrl}" target="_blank" rel="noopener" class="card-btn primary">
+        <a href="${directionsUrl}" target="_blank" rel="noopener" class="card-act-btn primary">
           Directions &rarr;
         </a>
-        <a href="${osmEditUrl}" target="_blank" rel="noopener" class="card-btn" title="Edit on OpenStreetMap">
+        <a href="${osmEditUrl}" target="_blank" rel="noopener" class="card-act-btn" title="Edit on OpenStreetMap">
           Edit OSM
         </a>
-        <a href="${osmUrl}" target="_blank" rel="noopener" class="card-btn" title="View on OpenStreetMap">
+        <a href="${osmUrl}" target="_blank" rel="noopener" class="card-act-btn" title="View on OpenStreetMap">
           View on OSM
         </a>
       </div>
@@ -977,9 +1002,6 @@ function createPopupHTML(place) {
   `;
 }
 
-/**
- * Card <-> Marker Focus synchronization
- */
 function selectAndFocusPlace(placeId, shouldFly = true) {
   state.selectedPlaceId = placeId;
 
@@ -1004,15 +1026,15 @@ function selectAndFocusPlace(placeId, shouldFly = true) {
 }
 
 /**
- * Geolocation ("Near Me")
+ * 8. GEOLOCATION ("NEAR ME")
  */
 function locateUser() {
   if (!navigator.geolocation) {
-    showToast('Geolocation is not supported by your browser.');
+    showToast('Geolocation is not supported on this device.');
     return;
   }
 
-  showToast('Locating your position in Mangalore...');
+  showToast('Pinpointing your location in Kudla...');
 
   navigator.geolocation.getCurrentPosition(
     (pos) => {
@@ -1023,7 +1045,7 @@ function locateUser() {
         userMarker.setLatLng([latitude, longitude]);
       } else {
         const userIcon = L.divIcon({
-          className: 'user-icon-wrap',
+          className: 'user-icon-pulse',
           html: `<div class="user-location-marker" title="You are here"></div>`,
           iconSize: [18, 18],
           iconAnchor: [9, 9]
@@ -1045,7 +1067,7 @@ function locateUser() {
       state.sortBy = 'distance';
 
       map.flyTo([latitude, longitude], 15, { duration: 1 });
-      showToast('Location updated! Sorted by distance.');
+      showToast('Location updated! Sorted by nearest places.');
       applyFiltersAndRender();
     },
     (err) => {
@@ -1056,9 +1078,6 @@ function locateUser() {
   );
 }
 
-/**
- * Haversine formula
- */
 function calculateDistance(lat1, lon1, lat2, lon2) {
   const R = 6371;
   const dLat = (lat2 - lat1) * Math.PI / 180;
@@ -1071,7 +1090,7 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
 }
 
 /**
- * Category Counts
+ * 9. UTILITIES
  */
 function renderCategoryCounts() {
   const counts = { all: state.places.length };
@@ -1090,19 +1109,20 @@ function renderCategoryCounts() {
   });
 }
 
-function updateResultCounts(count) {
-  document.getElementById('results-count').textContent = count === 1 ? 'Showing 1 place' : `Showing ${count} places`;
+function updateResultCount(count) {
+  document.getElementById('results-count').textContent = count === 1 ? '1 place' : `${count} places`;
 }
 
-function updateStatusPill(type, text) {
-  const dot = document.querySelector('.status-dot');
-  const textEl = document.getElementById('status-text');
+function updateStatusBadge(type, text) {
+  const pip = document.querySelector('.status-pip');
+  const textEl = document.getElementById('drawer-status-text');
 
-  if (type === 'live') dot.style.backgroundColor = '#10b981';
-  else if (type === 'loading') dot.style.backgroundColor = '#3b82f6';
-  else dot.style.backgroundColor = '#f59e0b';
-
-  textEl.textContent = text;
+  if (pip && textEl) {
+    if (type === 'live') pip.style.backgroundColor = '#10b981';
+    else if (type === 'loading') pip.style.backgroundColor = '#3b82f6';
+    else pip.style.backgroundColor = '#f59e0b';
+    textEl.textContent = text;
+  }
 }
 
 function updateModalCenterLinks() {
