@@ -1,16 +1,22 @@
 # Kudla Suttu | ಕುಡ್ಲ ಸುತ್ತು
 
+[![Open in Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FHanAbhi%2Fkudla-suttu)
+[![License: MIT](https://img.shields.io/badge/License-MIT-teal.svg)](LICENSE)
+[![OpenStreetMap](https://img.shields.io/badge/Data-OpenStreetMap-coral.svg)](https://www.openstreetmap.org)
+
 **Kudla Suttu** is an open-source local utility map for discovering and improving everyday places around **Mangalore (Kudla), Karnataka** using [OpenStreetMap](https://www.openstreetmap.org) (OSM) data.
 
-Rather than being a generic directory or single-purpose store finder, Kudla Suttu focuses on essential, high-utility everyday needs: finding a nearby hardware shop for sudden plumbing/electrical fixes, getting an urgent printout or xerox near campus, finding a working cobbler or mobile repair technician, spotting clean drinking water points and public washrooms, catching the right bus stop, or discovering budget-friendly local food spots.
+🌐 **Live Demo**: [https://kudla-suttu.vercel.app](https://kudla-suttu.vercel.app) *(or deploy your own in 1 click via Vercel / GitHub Pages)*
 
 ---
 
-## 🎯 Why Open-Source & OpenStreetMap?
+## 🎯 Why Kudla Suttu?
 
-1. **Community-Owned Data**: Proprietary map platforms often miss small neighbourhood repair shacks, public water fountains, community toilets, or xerox shops. On OpenStreetMap, anyone in Kudla can add or correct data permanently for the entire community.
-2. **Privacy & No Tracking**: Kudla Suttu runs as a pure static web app without tracking cookies, accounts, or proprietary lock-in.
-3. **Always Free & Open**: The map data is licensed under the Open Database License (ODbL) and the code is open under the MIT License.
+Proprietary maps often miss small neighbourhood repair shacks, public drinking water points, community toilets, or xerox shops. On OpenStreetMap, anyone in Kudla can add or correct data permanently for the entire community.
+
+- **No backend or databases required**: Pure static HTML/CSS/JS with Leaflet.js.
+- **Privacy-first**: No trackers, ads, or cookies.
+- **Open data**: Powered by OpenStreetMap contributors under ODbL.
 
 ---
 
@@ -39,6 +45,20 @@ Rather than being a generic directory or single-purpose store finder, Kudla Sutt
 
 ---
 
+## 🚀 One-Click Deployments
+
+### Deploy with Vercel
+1. Go to [vercel.com/new](https://vercel.com/new).
+2. Connect your GitHub account and click **Import** next to `HanAbhi/kudla-suttu`.
+3. Click **Deploy**. Vercel will instantly generate a live URL (e.g. `https://kudla-suttu.vercel.app`).
+
+### Deploy with GitHub Pages
+1. Go to your repo **Settings** &rarr; **Pages** (`https://github.com/HanAbhi/kudla-suttu/settings/pages`).
+2. Under **Build and deployment > Branch**, select `main` and `/ (root)`.
+3. Click **Save**. The map will be live at `https://hanabhi.github.io/kudla-suttu/` in ~1 minute.
+
+---
+
 ## 🤝 How to Contribute Local Data
 
 ### Step 1: Open OpenStreetMap iD Editor
@@ -60,22 +80,6 @@ phone=+91 824 2218900
 opening_hours=Mo-Sa 08:30-20:00
 wheelchair=yes
 ```
-
----
-
-## 🚀 Running Locally
-
-Kudla Suttu is a static frontend with **no build step** and **no backend required**.
-
-```bash
-# Clone the repository
-git clone https://github.com/<your-username>/kudla-suttu.git
-cd kudla-suttu
-
-# Start any static server (Python or Node.js)
-python -m http.server 8085
-```
-Open **`http://localhost:8085`** in your browser.
 
 ---
 
