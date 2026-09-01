@@ -1,121 +1,94 @@
 # Kudla Suttu | ಕುಡ್ಲ ಸುತ್ತು
 
-**Kudla Suttu** is an open-source civic discovery and hardware/essential services map for **Mangalore (Kudla), Karnataka**. 
+**Kudla Suttu** is an open-source local utility map for discovering and improving everyday places around **Mangalore (Kudla), Karnataka** using [OpenStreetMap](https://www.openstreetmap.org) (OSM) data.
 
-Built entirely with OpenStreetMap (OSM) data and Leaflet.js, it empowers residents, students, tradespeople, and visitors to locate essential local services while actively improving open local map data for the community.
-
----
-
-## 🌟 Features
-
-- **Focused Local Categories**:
-  - 🔧 **Hardware & Supplies**: Hardware, paint, electrical, plumbing, tools, and building supplies.
-  - ⚙️ **Repair & Craft Services**: Electronics, mobile, motorcycle, bicycle repairs, cobblers/shoemakers, and tailors.
-  - 📚 **Stationery & Student Essentials**: Bookstores, xerox/print centers, spiral binding, and office stationery.
-  - 💊 **Pharmacies & Healthcare**: 24x7 chemists, medical shops, and outpatient clinics.
-  - ☕ **Food & Eateries**: Vegetarian messes, cafes, coastal snack points, and restaurants.
-  - 🚻 **Public Toilets & Drinking Water**: Sulabh Shouchalays, pay-and-use washrooms, and free clean drinking water points.
-  - 🚌 **Bus Stops & Transit**: Mangalore City Bus Terminus (State Bank), KSRTC Bejai, and city route stops.
-- **Fast & Responsive Directory**: Instant client-side search by name, street, or category with synced map markers.
-- **Civic Contribution Flow**: 1-click links to OpenStreetMap's built-in **iD Editor** and **OSM Notes** to add missing shops or fix details with accurate coordinates.
-- **Resilient Data Architecture**: Queries live OpenStreetMap data via **Overpass API** with fallback to curated Mangalore seed data so the map is always responsive even when offline or during Overpass rate limits.
-- **Location-Aware ("Near Me")**: Computes great-circle distances and sorts the directory by nearest places first.
-- **Mangalore Coastal Palette**: Styled with coastal teal, warm coral/terracotta, sand parchment, and charcoal slate.
+Rather than being a generic directory or single-purpose store finder, Kudla Suttu focuses on essential, high-utility everyday needs: finding a nearby hardware shop for sudden plumbing/electrical fixes, getting an urgent printout or xerox near campus, finding a working cobbler or mobile repair technician, spotting clean drinking water points and public washrooms, catching the right bus stop, or discovering budget-friendly local food spots.
 
 ---
 
-## 🚀 Getting Started Locally
+## 🎯 Why Open-Source & OpenStreetMap?
 
-Kudla Suttu is a pure client-side static web application with **zero build steps** and no server dependencies.
+1. **Community-Owned Data**: Proprietary map platforms often miss small neighbourhood repair shacks, public water fountains, community toilets, or xerox shops. On OpenStreetMap, anyone in Kudla can add or correct data permanently for the entire community.
+2. **Privacy & No Tracking**: Kudla Suttu runs as a pure static web app without tracking cookies, accounts, or proprietary lock-in.
+3. **Always Free & Open**: The map data is licensed under the Open Database License (ODbL) and the code is open under the MIT License.
 
-### Option 1: Open in Any Browser
-Simply double-click `index.html` or open it directly in your browser:
+---
+
+## 🛠️ Core MVP Utility Categories
+
+| Category | Icon | What it covers | Key OSM Tags |
+|---|---|---|---|
+| **Hardware & Supplies** | 🔧 | Hardware, paint, electrical, plumbing, sanitaryware, tools, building supplies | `shop=hardware`, `shop=paint`, `shop=electrical`, `shop=plumbing`, `shop=building_materials` |
+| **Repair Services** | ⚙️ | Mobile screen/battery, laptop care, bike/motorcycle clinic, cobbler, tailor | `shop=electronics_repair`, `shop=mobile_phone`, `shop=motorcycle_repair`, `craft=shoemaker`, `craft=tailor` |
+| **Stationery & Xerox** | 📚 | Photocopying, printouts, spiral binding, college supplies, books | `shop=stationery`, `shop=copyshop`, `shop=books` |
+| **Pharmacies & Clinics** | 💊 | 24x7 medical stores, chemists, outpatient clinics | `amenity=pharmacy`, `amenity=chemist`, `amenity=clinic` |
+| **Public Toilets** | 🚻 | Sulabh Shouchalays, pay-and-use washrooms, railway/bus station washrooms | `amenity=toilets` (`fee=yes/no`) |
+| **Drinking Water** | 💧 | Clean RO water dispensers, public drinking water kiosks, park taps | `amenity=drinking_water` |
+| **Bus Stops & Transit** | 🚌 | State Bank City Bus Stand, Bejai KSRTC terminal, route bus stops | `highway=bus_stop`, `amenity=bus_station` |
+| **Budget & Student Food** | ☕ | Vegetarian tiffin messes, snack points, cafes, student-friendly eateries | `amenity=restaurant`, `amenity=cafe`, `amenity=fast_food` |
+
+---
+
+## 🗺️ How it Works
+
+1. **Leaflet.js + OSM Standard Tiles**: Interactive map centered directly on Mangalore (`12.9141° N, 74.8560° E`).
+2. **Overpass API Ingestion**: Live Overpass QL queries fetch nodes and ways matching the utility categories across the Mangalore bounding box (`12.80, 74.80, 13.02, 74.96`).
+3. **Resilient Seed Fallback**: Contains a curated baseline seed dataset for Mangalore (Hampankatta, Kadri, Kankanady, Bejai, Car Street, Balmatta, Bunder, Surathkal) so the tool works instantly offline or during Overpass rate limits.
+4. **Geolocation ("Near Me")**: Calculates real-time distance and sorts places nearest to the user.
+5. **Direct OSM Contribution Workflow**: One-click links open OpenStreetMap's built-in **iD Editor** centered at the current map view coordinates to add missing shops or update opening hours and phone numbers.
+
+---
+
+## 🤝 How to Contribute Local Data
+
+### Step 1: Open OpenStreetMap iD Editor
+Click **"Add / Edit Place at Map View"** inside Kudla Suttu, or visit [openstreetmap.org/edit](https://www.openstreetmap.org/edit). You can sign up with Google, GitHub, or email in seconds.
+
+### Step 2: Add a Feature
+- Click **"Point"** at the top toolbar and click on the shop or facility location.
+- Type the category (e.g. `Hardware Store`, `Drinking Water`, `Shoemaker`, `Pharmacy`).
+
+### Step 3: Add Accurate Local Tags
+Add useful information for Kudla residents:
+
+```ini
+name=Coastal Hardware & Paints
+name:kn=ಕೋಸ್ಟಲ್ ಹಾರ್ಡ್‌ವೇರ್ & ಪೇಂಟ್ಸ್
+name:tcy=ಕೋಸ್ಟಲ್ ಹಾರ್ಡ್‌ವೇರ್
+addr:street=Kadri Temple Road, Kadri
+phone=+91 824 2218900
+opening_hours=Mo-Sa 08:30-20:00
+wheelchair=yes
+```
+
+---
+
+## 🚀 Running Locally
+
+Kudla Suttu is a static frontend with **no build step** and **no backend required**.
+
 ```bash
-# On Windows PowerShell
-Start-Process index.html
-```
+# Clone the repository
+git clone https://github.com/<your-username>/kudla-suttu.git
+cd kudla-suttu
 
-### Option 2: Run with a Local Static Server
-If you use Node.js or Python:
-```bash
-# Using Python 3
-python -m http.server 8080
-
-# Using Node.js (npx serve)
-npx serve .
+# Start any static server (Python or Node.js)
+python -m http.server 8085
 ```
-Then visit `http://localhost:8080` in your web browser.
+Open **`http://localhost:8085`** in your browser.
 
 ---
 
-## 🗺️ How Kudla Suttu Uses OpenStreetMap
+## 🧭 Future Roadmap
 
-1. **Overpass API Query**: When the app starts, it constructs an Overpass QL query covering the Mangalore bounding box `[12.80, 74.80, 13.02, 74.96]`.
-2. **Tag Parsing**: It extracts `nodes` and `ways` matching our category tags (e.g., `shop=hardware`, `amenity=toilets`, `craft=shoemaker`).
-3. **Dynamic Direct Links**:
-   - **View Object**: `https://www.openstreetmap.org/node/<id>`
-   - **Edit Object in iD**: `https://www.openstreetmap.org/edit?node=<id>#map=19/<lat>/<lon>`
-   - **Add Place at Map Center**: `https://www.openstreetmap.org/edit#map=<zoom>/<lat>/<lon>`
-
----
-
-## 🤝 How You Can Contribute to OpenStreetMap Mangalore
-
-Any information you add to OpenStreetMap becomes permanent, freely available to everyone, and immediately visible in Kudla Suttu!
-
-### Step 1: Open the iD Web Editor
-Click **"Contribute Data"** or **"Add Place at Center"** in Kudla Suttu, or visit [openstreetmap.org](https://www.openstreetmap.org). Log in or create a free account.
-
-### Step 2: Add a Point or Outline
-- Click **Point** at the top toolbar and click on the building or shop location.
-- Type the category (e.g. `Hardware Store`, `Pharmacy`, `Public Toilets`).
-
-### Step 3: Add Essential Tags & Local Languages
-Fill in the form fields. For best local mapping quality in Mangalore:
-
-| Field | OSM Tag | Example |
-|---|---|---|
-| **English Name** | `name=*` | `Pai Hardware & Paints` |
-| **Kannada Name** | `name:kn=*` | `ಪೈ ಹಾರ್ಡ್‌ವೇರ್ & ಪೇಂಟ್ಸ್` |
-| **Tulu Name** | `name:tcy=*` | `ಪೈ ಹಾರ್ಡ್‌ವೇರ್` |
-| **Street / Locality** | `addr:street=*` | `K.S. Rao Road, Hampankatta` |
-| **Phone Number** | `phone=*` | `+91 824 2440123` |
-| **Opening Hours** | `opening_hours=*` | `Mo-Sa 09:00-20:00; Su off` |
-| **Wheelchair Access** | `wheelchair=*` | `yes` / `limited` / `no` |
-
-### Recommended Tags for Mangalore Essentials
-
-- **Hardware**: `shop=hardware`, `shop=electrical`, `shop=plumbing`, `shop=paint`, `shop=doityourself`, `shop=building_materials`
-- **Repairs**: `shop=electronics_repair`, `shop=mobile_phone`, `shop=motorcycle_repair`, `craft=shoemaker`, `craft=tailor`, `craft=electrician`, `craft=plumber`
-- **Student Essentials**: `shop=stationery`, `shop=books`, `shop=copyshop`
-- **Healthcare**: `amenity=pharmacy`, `amenity=chemist`, `amenity=clinic`
-- **Sanitation**: `amenity=toilets`, `fee=yes/no`, `amenity=drinking_water`
-- **Transit**: `highway=bus_stop`, `amenity=bus_station`
-
----
-
-## 📁 Project Structure
-
-```
-kudla-suttu/
-├── index.html       # Semantic HTML layout, modals, and templates
-├── style.css        # Mangalore coastal design system and Leaflet customizations
-├── script.js        # Leaflet map logic, Overpass API, seed data, and search/filtering
-└── README.md        # Documentation and open-source contributor guide
-```
-
----
-
-## 💡 Future Roadmap
-
-- 🌐 **Multilingual UI Toggle**: Switch app interface between English, Kannada (ಕನ್ನಡ), and Tulu.
-- 📱 **PWA & Offline Directory**: Installable web app with offline vector tile caching for field mappers.
-- ✅ **Community Verification Flags**: Allow local users to verify if a shop or water point is currently operational.
-- 🗺️ **Kudla Mapping Drives**: Coordinate community mapathons with local colleges (NITK, St. Aloysius, Canara, Sahyadri).
+- 🌐 **Multilingual UI Support**: Full Kannada (ಕನ್ನಡ), Tulu (ತುಳು), and Konkani UI language options.
+- ♿ **Accessibility & Wheelchair Mapping**: Highlight step-free entrances and accessible washrooms across Mangalore.
+- 📶 **Offline PWA Support**: Installable progressive web app with cached local utility datasets for field volunteers.
+- 🗺️ **Community Mapathons**: Collaborative mapping drives in partnership with Mangalore colleges and civic groups.
 
 ---
 
 ## 📄 License
 
-- Code: MIT License
-- Map Data: &copy; [OpenStreetMap contributors](https://www.openstreetmap.org/copyright) (ODbL)
+- **Source Code**: [MIT License](LICENSE)
+- **Map Data**: &copy; [OpenStreetMap contributors](https://www.openstreetmap.org/copyright) (ODbL)

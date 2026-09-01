@@ -1,11 +1,11 @@
 /**
- * Kudla Suttu - Mangalore Civic & Discovery Map
- * Open-source civic map powered by OpenStreetMap & Leaflet.js
+ * Kudla Suttu - Open Local Utility Map for Mangalore/Kudla
+ * Powered by OpenStreetMap & Leaflet.js
  */
 
-// Configuration & Constants
+// Core Configuration
 const MANGALORE_CONFIG = {
-  center: [12.9141, 74.8560], // Hampankatta, Mangalore
+  center: [12.9141, 74.8560], // Mangalore City Center / Hampankatta
   defaultZoom: 14,
   minZoom: 11,
   maxZoom: 19,
@@ -23,63 +23,63 @@ const MANGALORE_CONFIG = {
   ]
 };
 
-// Category Configuration & Metadata
+// 8 Core Everyday Utility Categories
 const CATEGORIES = {
   hardware: {
     id: 'hardware',
     name: 'Hardware & Supplies',
     icon: '🔧',
-    color: '#c05621',
-    tags: ['shop=hardware', 'shop=doityourself', 'shop=paint', 'shop=electrical', 'shop=plumbing', 'shop=trade', 'shop=building_materials']
+    color: '#c05621'
   },
   repair: {
     id: 'repair',
-    name: 'Repair & Craft',
+    name: 'Repair Services',
     icon: '⚙️',
-    color: '#3182ce',
-    tags: ['shop=electronics_repair', 'shop=mobile_phone', 'shop=car_repair', 'shop=bicycle_repair', 'shop=motorcycle_repair', 'craft=shoemaker', 'craft=tailor', 'craft=electrician', 'craft=plumber', 'craft=carpenter']
+    color: '#2b6cb0'
   },
   stationery: {
     id: 'stationery',
     name: 'Stationery & Xerox',
     icon: '📚',
-    color: '#2f855a',
-    tags: ['shop=stationery', 'shop=books', 'shop=copyshop', 'shop=newsagent']
+    color: '#276749'
   },
   pharmacy: {
     id: 'pharmacy',
     name: 'Pharmacies & Clinics',
     icon: '💊',
-    color: '#c53030',
-    tags: ['amenity=pharmacy', 'amenity=chemist', 'amenity=clinic', 'amenity=hospital']
-  },
-  food: {
-    id: 'food',
-    name: 'Food & Snacks',
-    icon: '☕',
-    color: '#dd6b20',
-    tags: ['amenity=restaurant', 'amenity=cafe', 'amenity=fast_food']
+    color: '#c53030'
   },
   toilet: {
     id: 'toilet',
-    name: 'Public Toilets & Water',
+    name: 'Public Toilets',
     icon: '🚻',
-    color: '#007791',
-    tags: ['amenity=toilets', 'amenity=drinking_water']
+    color: '#007791'
   },
-  transit: {
-    id: 'transit',
-    name: 'Bus Stops',
+  water: {
+    id: 'water',
+    name: 'Drinking Water Points',
+    icon: '💧',
+    color: '#0284c7'
+  },
+  bus: {
+    id: 'bus',
+    name: 'Bus Stops & Transit',
     icon: '🚌',
-    color: '#6b46c1',
-    tags: ['highway=bus_stop', 'amenity=bus_station']
+    color: '#6b46c1'
+  },
+  food: {
+    id: 'food',
+    name: 'Budget & Student Food',
+    icon: '☕',
+    color: '#dd6b20'
   }
 };
 
-// Curated Seed Data for instant offline/guaranteed availability
+// Curated Mangalore Everyday Utility Seed Data
 const MANGALORE_SEED_DATA = [
+  // Hardware
   {
-    id: 'seed-1',
+    id: 'seed-h1',
     osmType: 'node',
     osmId: 30101,
     name: 'Pai & Sons Hardware & Electricals',
@@ -91,11 +91,10 @@ const MANGALORE_SEED_DATA = [
     street: 'K.S. Rao Road, Hampankatta',
     phone: '+91 824 2440123',
     openingHours: 'Mo-Sa 09:00-20:00',
-    wheelchair: 'yes',
-    tags: { 'shop': 'hardware', 'operator': 'Pai Group' }
+    tags: { 'shop': 'hardware' }
   },
   {
-    id: 'seed-2',
+    id: 'seed-h2',
     osmType: 'node',
     osmId: 30102,
     name: 'Coastal Asian Paints & Building Supplies',
@@ -110,7 +109,7 @@ const MANGALORE_SEED_DATA = [
     tags: { 'shop': 'paint' }
   },
   {
-    id: 'seed-3',
+    id: 'seed-h3',
     osmType: 'node',
     osmId: 30103,
     name: 'Mangalore Electricals & Plumbing Mart',
@@ -125,28 +124,13 @@ const MANGALORE_SEED_DATA = [
     tags: { 'shop': 'electrical' }
   },
   {
-    id: 'seed-4',
+    id: 'seed-h4',
     osmType: 'node',
     osmId: 30104,
-    name: 'Kudla Tools & Power Machinery Spares',
-    nameKn: 'ಕುಡ್ಲ ಟೂಲ್ಸ್ & ಸ್ಪೇರ್ಸ್',
-    category: 'hardware',
-    subType: 'hardware',
-    lat: 12.8645,
-    lon: 74.8360,
-    street: 'Bunder Port Road, Old Port',
-    phone: '+91 824 2421190',
-    openingHours: 'Mo-Sa 08:00-19:00',
-    tags: { 'shop': 'hardware' }
-  },
-  {
-    id: 'seed-5',
-    osmType: 'node',
-    osmId: 30105,
     name: 'Surathkal Hardware & Sanitary Depot',
     nameKn: 'ಸುರತ್ಕಲ್ ಹಾರ್ಡ್‌ವೇರ್ ಡಿಪೋ',
     category: 'hardware',
-    subType: 'doityourself',
+    subType: 'hardware',
     lat: 12.9810,
     lon: 74.7985,
     street: 'NH 66 Main Road, Surathkal',
@@ -154,12 +138,14 @@ const MANGALORE_SEED_DATA = [
     openingHours: 'Mo-Sa 09:00-20:00',
     tags: { 'shop': 'hardware' }
   },
+
+  // Repair
   {
-    id: 'seed-6',
+    id: 'seed-r1',
     osmType: 'node',
     osmId: 30201,
     name: 'Modern Mobile & Laptop Repair Hub',
-    nameKn: 'ಮಾಡರ್ನ್ ಮೊಬೈಲ್ ರಿಪೇರ್',
+    nameKn: 'ಮಾಡರ್ನ್ ಮೊಬೈಲ್ & ಲ್ಯಾಪ್‌ಟಾಪ್ ರಿಪೇರ್',
     category: 'repair',
     subType: 'electronics_repair',
     lat: 12.8712,
@@ -170,7 +156,7 @@ const MANGALORE_SEED_DATA = [
     tags: { 'shop': 'electronics_repair' }
   },
   {
-    id: 'seed-7',
+    id: 'seed-r2',
     osmType: 'node',
     osmId: 30202,
     name: 'Kankanady Two-Wheeler & Bike Clinic',
@@ -185,27 +171,43 @@ const MANGALORE_SEED_DATA = [
     tags: { 'shop': 'motorcycle_repair' }
   },
   {
-    id: 'seed-8',
+    id: 'seed-r3',
     osmType: 'node',
     osmId: 30203,
-    name: 'Babu Master Shoe Repair & Leather Works',
+    name: 'Babu Master Shoe Repair & Cobbler',
     nameKn: 'ಬಾಬು ಮಾಸ್ಟರ್ ಶೂ ರಿಪೇರ್',
     category: 'repair',
     subType: 'shoemaker',
     lat: 12.8735,
     lon: 74.8385,
-    street: 'Car Street, Sri Venkataramana Temple Lane',
+    street: 'Car Street, Venkataramana Temple Lane',
     openingHours: 'Mo-Sa 09:30-19:00',
     tags: { 'craft': 'shoemaker' }
   },
   {
-    id: 'seed-9',
+    id: 'seed-r4',
+    osmType: 'node',
+    osmId: 30204,
+    name: 'City Cycle Works & Puncture Repair',
+    nameKn: 'ಸಿಟಿ ಸೈಕಲ್ ವರ್ಕ್ಸ್',
+    category: 'repair',
+    subType: 'bicycle_repair',
+    lat: 12.8675,
+    lon: 74.8445,
+    street: 'Bhavanthi Street, Bunder',
+    openingHours: 'Mo-Sa 08:30-20:00',
+    tags: { 'shop': 'bicycle_repair' }
+  },
+
+  // Stationery & Xerox
+  {
+    id: 'seed-s1',
     osmType: 'node',
     osmId: 30301,
     name: 'School Book Co. & Student Stationery',
     nameKn: 'ಸ್ಕೂಲ್ ಬುಕ್ ಕಂಪನಿ',
     category: 'stationery',
-    subType: 'stationery',
+    subType: 'books',
     lat: 12.8690,
     lon: 74.8430,
     street: 'Car Street, Hampankatta',
@@ -214,7 +216,7 @@ const MANGALORE_SEED_DATA = [
     tags: { 'shop': 'books' }
   },
   {
-    id: 'seed-10',
+    id: 'seed-s2',
     osmType: 'node',
     osmId: 30302,
     name: 'Balmatta Xerox, Spiral Binding & Print Hub',
@@ -228,8 +230,10 @@ const MANGALORE_SEED_DATA = [
     openingHours: 'Mo-Sa 08:00-21:30',
     tags: { 'shop': 'copyshop' }
   },
+
+  // Pharmacy
   {
-    id: 'seed-11',
+    id: 'seed-p1',
     osmType: 'node',
     osmId: 30401,
     name: 'Apollo Pharmacy 24x7',
@@ -241,11 +245,10 @@ const MANGALORE_SEED_DATA = [
     street: 'MG Road, Kodialbail',
     phone: '+91 824 2445678',
     openingHours: '24/7',
-    wheelchair: 'yes',
     tags: { 'amenity': 'pharmacy', 'opening_hours': '24/7' }
   },
   {
-    id: 'seed-12',
+    id: 'seed-p2',
     osmType: 'node',
     osmId: 30402,
     name: 'KMC Hospital Pharmacy & Outpatient Clinic',
@@ -257,13 +260,117 @@ const MANGALORE_SEED_DATA = [
     street: 'Dr B R Ambedkar Circle (Jyothi)',
     phone: '+91 824 2444590',
     openingHours: '24/7',
-    wheelchair: 'yes',
-    tags: { 'amenity': 'hospital' }
+    tags: { 'amenity': 'pharmacy' }
   },
+
+  // Public Toilets
   {
-    id: 'seed-13',
+    id: 'seed-t1',
     osmType: 'node',
     osmId: 30501,
+    name: 'Sulabh Public Toilet & Washrooms',
+    nameKn: 'ಸುಲಭ್ ಸಾರ್ವಜನಿಕ ಶೌಚಾಲಯ',
+    category: 'toilet',
+    subType: 'toilets',
+    lat: 12.8625,
+    lon: 74.8390,
+    street: 'Near State Bank Bus Stand, Bunder',
+    openingHours: 'Mo-Su 05:00-23:00',
+    tags: { 'amenity': 'toilets', 'fee': 'yes' }
+  },
+  {
+    id: 'seed-t2',
+    osmType: 'node',
+    osmId: 30502,
+    name: 'Central Market Public Toilet Block',
+    nameKn: 'ಸೆಂಟ್ರಲ್ ಮಾರ್ಕೆಟ್ ಸಾರ್ವಜನಿಕ ಶೌಚಾಲಯ',
+    category: 'toilet',
+    subType: 'toilets',
+    lat: 12.8670,
+    lon: 74.8420,
+    street: 'Market Road, Hampankatta',
+    openingHours: 'Mo-Su 05:30-22:00',
+    tags: { 'amenity': 'toilets' }
+  },
+
+  // Drinking Water Points
+  {
+    id: 'seed-w1',
+    osmType: 'node',
+    osmId: 30601,
+    name: 'Kadri Park Free RO Clean Drinking Water Kiosk',
+    nameKn: 'ಕದ್ರಿ ಪಾರ್ಕ್ ಶುದ್ಧ ಕುಡಿಯುವ ನೀರು',
+    category: 'water',
+    subType: 'drinking_water',
+    lat: 12.8780,
+    lon: 74.8620,
+    street: 'Kadri Park Main Entrance',
+    openingHours: 'Mo-Su 06:00-20:00',
+    tags: { 'amenity': 'drinking_water' }
+  },
+  {
+    id: 'seed-w2',
+    osmType: 'node',
+    osmId: 30602,
+    name: 'Urwa Marigudi Clean Drinking Water Dispenser',
+    nameKn: 'ಉರ್ವ ಮಾರಿಗುಡಿ ಕುಡಿಯುವ ನೀರು',
+    category: 'water',
+    subType: 'drinking_water',
+    lat: 12.8870,
+    lon: 74.8365,
+    street: 'Urwa Market Junction',
+    openingHours: '24/7',
+    tags: { 'amenity': 'drinking_water' }
+  },
+
+  // Bus Stops & Transit
+  {
+    id: 'seed-b1',
+    osmType: 'node',
+    osmId: 30701,
+    name: 'State Bank City Bus Terminus (Service Bus Stand)',
+    nameKn: 'ಸ್ಟೇಟ್ ಬ್ಯಾಂಕ್ ಸಿಟಿ ಬಸ್ ನಿಲ್ದಾಣ',
+    category: 'bus',
+    subType: 'bus_station',
+    lat: 12.8630,
+    lon: 74.8395,
+    street: 'State Bank Circle, Hampankatta',
+    tags: { 'amenity': 'bus_station' }
+  },
+  {
+    id: 'seed-b2',
+    osmType: 'node',
+    osmId: 30702,
+    name: 'KSRTC Intercity Bus Terminus Bejai',
+    nameKn: 'ಕೆ.ಎಸ್.ಆರ್.ಟಿ.ಸಿ ಬಸ್ ನಿಲ್ದಾಣ ಬಿಜೈ',
+    category: 'bus',
+    subType: 'bus_station',
+    lat: 12.8885,
+    lon: 74.8480,
+    street: 'Bejai Main Road, Mangalore',
+    phone: '+91 824 2211244',
+    openingHours: '24/7',
+    tags: { 'amenity': 'bus_station' }
+  },
+  {
+    id: 'seed-b3',
+    osmType: 'node',
+    osmId: 30703,
+    name: 'Jyothi Circle Bus Stop (Dr Ambedkar Circle)',
+    nameKn: 'ಜ್ಯೋತಿ ಸರ್ಕಲ್ ಬಸ್ ಸ್ಟಾಪ್',
+    category: 'bus',
+    subType: 'bus_stop',
+    lat: 12.8725,
+    lon: 74.8480,
+    street: 'Balmatta Road / St Aloysius',
+    tags: { 'highway': 'bus_stop' }
+  },
+
+  // Budget & Student Food
+  {
+    id: 'seed-f1',
+    osmType: 'node',
+    osmId: 30801,
     name: 'Ideal Ice Cream Parlour & Snacks',
     nameKn: 'ಐಡಿಯಲ್ ಐಸ್ ಕ್ರೀಮ್',
     category: 'food',
@@ -276,9 +383,9 @@ const MANGALORE_SEED_DATA = [
     tags: { 'amenity': 'cafe' }
   },
   {
-    id: 'seed-14',
+    id: 'seed-f2',
     osmType: 'node',
-    osmId: 30502,
+    osmId: 30802,
     name: 'Janatha Deluxe Veg Restaurant',
     nameKn: 'ಜನತಾ ಡೀಲಕ್ಸ್ ಹೋಟೆಲ್',
     category: 'food',
@@ -289,68 +396,10 @@ const MANGALORE_SEED_DATA = [
     phone: '+91 824 2426860',
     openingHours: 'Mo-Su 06:30-22:00',
     tags: { 'amenity': 'restaurant' }
-  },
-  {
-    id: 'seed-15',
-    osmType: 'node',
-    osmId: 30601,
-    name: 'Sulabh Public Toilet & Washrooms',
-    nameKn: 'ಸುಲಭ್ ಸಾರ್ವಜನಿಕ ಶೌಚಾಲಯ',
-    category: 'toilet',
-    subType: 'toilets',
-    lat: 12.8625,
-    lon: 74.8390,
-    street: 'Near State Bank Bus Stand, Bunder',
-    openingHours: 'Mo-Su 05:00-23:00',
-    wheelchair: 'limited',
-    tags: { 'amenity': 'toilets', 'fee': 'yes' }
-  },
-  {
-    id: 'seed-16',
-    osmType: 'node',
-    osmId: 30602,
-    name: 'Kadri Park Free RO Drinking Water Point',
-    nameKn: 'ಕದ್ರಿ ಪಾರ್ಕ್ ಶುದ್ಧ ಕುಡಿಯುವ ನೀರು',
-    category: 'toilet',
-    subType: 'drinking_water',
-    lat: 12.8780,
-    lon: 74.8620,
-    street: 'Kadri Park Main Entrance',
-    openingHours: 'Mo-Su 06:00-20:00',
-    tags: { 'amenity': 'drinking_water' }
-  },
-  {
-    id: 'seed-17',
-    osmType: 'node',
-    osmId: 30701,
-    name: 'State Bank City Bus Terminus (Service Bus Stand)',
-    nameKn: 'ಸ್ಟೇಟ್ ಬ್ಯಾಂಕ್ ಸಿಟಿ ಬಸ್ ನಿಲ್ದಾಣ',
-    category: 'transit',
-    subType: 'bus_station',
-    lat: 12.8630,
-    lon: 74.8395,
-    street: 'State Bank Circle, Hampankatta',
-    tags: { 'amenity': 'bus_station' }
-  },
-  {
-    id: 'seed-18',
-    osmType: 'node',
-    osmId: 30702,
-    name: 'KSRTC Intercity Bus Terminus Bejai',
-    nameKn: 'ಕೆ.ಎಸ್.ಆರ್.ಟಿ.ಸಿ ಬಸ್ ನಿಲ್ದಾಣ ಬಿಜೈ',
-    category: 'transit',
-    subType: 'bus_station',
-    lat: 12.8885,
-    lon: 74.8480,
-    street: 'Bejai Main Road, Mangalore',
-    phone: '+91 824 2211244',
-    openingHours: '24/7',
-    wheelchair: 'yes',
-    tags: { 'amenity': 'bus_station' }
   }
 ];
 
-// Application State
+// App State
 const state = {
   places: [],
   filteredPlaces: [],
@@ -360,17 +409,17 @@ const state = {
   sortBy: 'default',
   userLocation: null,
   isLoadingOSM: false,
-  osmSource: 'cached' // 'live' or 'cached'
+  osmSource: 'cached'
 };
 
-// Global Map References
+// Map & Layer Variables
 let map = null;
 let markersLayerGroup = null;
 let userMarker = null;
-const markerMap = new Map(); // id -> L.Marker
+const markerMap = new Map();
 
 /**
- * Initialize Application
+ * Initialize on DOM Ready
  */
 document.addEventListener('DOMContentLoaded', () => {
   initMap();
@@ -381,7 +430,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /**
- * Initialize Leaflet Map
+ * Setup Leaflet Map
  */
 function initMap() {
   map = L.map('map', {
@@ -392,13 +441,13 @@ function initMap() {
     zoomControl: true
   });
 
-  // Base OpenStreetMap Tiles
+  // OpenStreetMap Standard Tiles
   const osmStandard = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors',
     maxZoom: 19
   }).addTo(map);
 
-  // Alternative Clean CartoDB Positron Tiles
+  // Carto Light Clean Tiles Option
   const cartoPositron = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
     attribution: '&copy; <a href="https://carto.com/">CARTO</a> &copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>',
     maxZoom: 19
@@ -406,109 +455,112 @@ function initMap() {
 
   L.control.layers({
     'OpenStreetMap Standard': osmStandard,
-    'Carto Light Clean': cartoPositron
+    'Carto Clean Light': cartoPositron
   }, null, { position: 'topright' }).addTo(map);
 
   markersLayerGroup = L.layerGroup().addTo(map);
 
-  // Update contribute modal links when map view moves
   map.on('moveend', updateModalCenterLinks);
   updateModalCenterLinks();
 }
 
 /**
- * Initialize Places Data with Seed Data & Trigger Overpass Query
+ * Seed data init & live Overpass query trigger
  */
 function initPlacesData() {
   state.places = [...MANGALORE_SEED_DATA];
-  updateStatusBadge('cached', `${state.places.length} places (Mangalore Seed)`);
+  updateStatusPill('cached', `${state.places.length} places (Kudla Seed)`);
   fetchOverpassData();
 }
 
 /**
- * Build and execute Overpass API query for Mangalore
+ * Query Overpass API for Mangalore area
  */
 async function fetchOverpassData() {
   state.isLoadingOSM = true;
-  updateStatusBadge('loading', 'Fetching live OSM data...');
+  updateStatusPill('loading', 'Syncing live OpenStreetMap...');
 
   const { south, west, north, east } = MANGALORE_CONFIG.bbox;
   const bboxStr = `${south},${west},${north},${east}`;
 
-  // Overpass QL Query for Mangalore
-  const overpassQuery = `
+  const query = `
     [out:json][timeout:20];
     (
-      // Hardware & Supplies
+      // Hardware
       node["shop"~"^(hardware|doityourself|paint|electrical|plumbing|trade|building_materials)$"](${bboxStr});
       way["shop"~"^(hardware|doityourself|paint|electrical|plumbing|trade|building_materials)$"](${bboxStr});
 
-      // Repair & Craft
+      // Repairs
       node["shop"~"^(electronics_repair|mobile_phone|car_repair|bicycle_repair|motorcycle_repair)$"](${bboxStr});
       node["craft"~"^(shoemaker|tailor|electrician|plumber|carpenter)$"](${bboxStr});
 
-      // Stationery & Xerox
+      // Stationery
       node["shop"~"^(stationery|books|copyshop)$"](${bboxStr});
 
-      // Pharmacies & Health
+      // Pharmacy
       node["amenity"~"^(pharmacy|chemist|clinic)$"](${bboxStr});
 
-      // Public Toilets & Drinking Water
-      node["amenity"~"^(toilets|drinking_water)$"](${bboxStr});
+      // Public Toilets
+      node["amenity"="toilets"](${bboxStr});
 
-      // Transit & Bus Stops
+      // Drinking Water
+      node["amenity"="drinking_water"](${bboxStr});
+
+      // Bus Stops & Stations
       node["highway"="bus_stop"](${bboxStr});
       node["amenity"="bus_station"](${bboxStr});
       way["amenity"="bus_station"](${bboxStr});
+
+      // Budget Food
+      node["amenity"~"^(restaurant|cafe|fast_food)$"](${bboxStr});
     );
     out center tags;
   `;
 
   let success = false;
-  let parsedPlaces = [];
+  let parsed = [];
 
   for (const endpoint of MANGALORE_CONFIG.overpassEndpoints) {
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 12000);
+      const timer = setTimeout(() => controller.abort(), 12000);
 
-      const response = await fetch(endpoint, {
+      const res = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: 'data=' + encodeURIComponent(overpassQuery),
+        body: 'data=' + encodeURIComponent(query),
         signal: controller.signal
       });
 
-      clearTimeout(timeoutId);
+      clearTimeout(timer);
 
-      if (response.ok) {
-        const data = await response.json();
-        if (data && data.elements && data.elements.length > 0) {
-          parsedPlaces = normalizeOSMElements(data.elements);
+      if (res.ok) {
+        const json = await res.json();
+        if (json && json.elements && json.elements.length > 0) {
+          parsed = normalizeOSMElements(json.elements);
           success = true;
           break;
         }
       }
-    } catch (err) {
-      console.warn(`Overpass endpoint ${endpoint} failed or timed out:`, err.message);
+    } catch (e) {
+      console.warn(`Endpoint ${endpoint} failed:`, e.message);
     }
   }
 
   state.isLoadingOSM = false;
 
-  if (success && parsedPlaces.length > 0) {
-    // Merge live parsed places with curated seed places (preventing duplicate IDs)
-    const liveOsmIds = new Set(parsedPlaces.map(p => `${p.osmType}-${p.osmId}`));
-    const nonDuplicatedSeeds = MANGALORE_SEED_DATA.filter(seed => !liveOsmIds.has(`${seed.osmType}-${seed.osmId}`));
+  if (success && parsed.length > 0) {
+    const liveIds = new Set(parsed.map(p => `${p.osmType}-${p.osmId}`));
+    const extraSeeds = MANGALORE_SEED_DATA.filter(s => !liveIds.has(`${s.osmType}-${s.osmId}`));
     
-    state.places = [...parsedPlaces, ...nonDuplicatedSeeds];
+    state.places = [...parsed, ...extraSeeds];
     state.osmSource = 'live';
-    updateStatusBadge('live', `${state.places.length} places (Live OpenStreetMap)`);
-    showToast(`Loaded ${state.places.length} places from OpenStreetMap!`);
+    updateStatusPill('live', `${state.places.length} places (Live OSM)`);
+    showToast(`Loaded ${state.places.length} utility places from OpenStreetMap!`);
   } else {
     state.osmSource = 'cached';
-    updateStatusBadge('cached', `${state.places.length} places (Curated Kudla Data)`);
-    showToast('OSM API slow/offline: Displaying curated Mangalore places directory.');
+    updateStatusPill('cached', `${state.places.length} places (Curated Kudla Data)`);
+    showToast('Using curated Mangalore local directory.');
   }
 
   renderCategoryCounts();
@@ -516,7 +568,7 @@ async function fetchOverpassData() {
 }
 
 /**
- * Normalize raw OSM elements into clean place objects
+ * Normalizes OSM raw elements
  */
 function normalizeOSMElements(elements) {
   return elements.map(el => {
@@ -526,10 +578,10 @@ function normalizeOSMElements(elements) {
 
     if (!lat || !lon) return null;
 
-    const category = categorizeOSMTags(tags);
-    if (!category) return null;
+    const catKey = determineCategory(tags);
+    if (!catKey) return null;
 
-    const name = tags.name || tags['name:en'] || tags.operator || tags.brand || getDefaultNameForTag(tags, category);
+    const name = tags.name || tags['name:en'] || tags.operator || tags.brand || fallbackName(tags, catKey);
     const nameKn = tags['name:kn'] || tags['name:tcy'] || '';
     
     let street = tags['addr:street'] || tags['addr:full'] || tags['addr:suburb'] || tags['addr:place'] || tags['addr:city'] || '';
@@ -537,7 +589,6 @@ function normalizeOSMElements(elements) {
 
     const phone = tags.phone || tags['contact:phone'] || tags['contact:mobile'] || '';
     const openingHours = tags.opening_hours || '';
-    const wheelchair = tags.wheelchair || '';
 
     return {
       id: `osm-${el.type}-${el.id}`,
@@ -545,90 +596,81 @@ function normalizeOSMElements(elements) {
       osmId: el.id,
       name,
       nameKn,
-      category: category.id,
+      category: catKey,
       subType: tags.shop || tags.craft || tags.amenity || tags.highway || 'general',
       lat,
       lon,
       street,
       phone,
       openingHours,
-      wheelchair,
       tags
     };
   }).filter(Boolean);
 }
 
 /**
- * Determine category from OSM tags
+ * Maps OSM tags to our 8 core categories
  */
-function categorizeOSMTags(tags) {
+function determineCategory(tags) {
+  if (tags.amenity === 'drinking_water') return 'water';
+  if (tags.amenity === 'toilets') return 'toilet';
+  if (tags.highway === 'bus_stop' || tags.amenity === 'bus_station') return 'bus';
+
   if (tags.shop) {
     if (['hardware', 'doityourself', 'paint', 'electrical', 'plumbing', 'trade', 'building_materials'].includes(tags.shop)) {
-      return CATEGORIES.hardware;
+      return 'hardware';
     }
     if (['electronics_repair', 'mobile_phone', 'car_repair', 'bicycle_repair', 'motorcycle_repair'].includes(tags.shop)) {
-      return CATEGORIES.repair;
+      return 'repair';
     }
     if (['stationery', 'books', 'copyshop'].includes(tags.shop)) {
-      return CATEGORIES.stationery;
+      return 'stationery';
     }
   }
 
   if (tags.craft && ['shoemaker', 'tailor', 'electrician', 'plumber', 'carpenter'].includes(tags.craft)) {
-    return CATEGORIES.repair;
+    return 'repair';
   }
 
   if (tags.amenity) {
     if (['pharmacy', 'chemist', 'clinic', 'hospital'].includes(tags.amenity)) {
-      return CATEGORIES.pharmacy;
+      return 'pharmacy';
     }
     if (['restaurant', 'cafe', 'fast_food'].includes(tags.amenity)) {
-      return CATEGORIES.food;
+      return 'food';
     }
-    if (['toilets', 'drinking_water'].includes(tags.amenity)) {
-      return CATEGORIES.toilet;
-    }
-    if (tags.amenity === 'bus_station') {
-      return CATEGORIES.transit;
-    }
-  }
-
-  if (tags.highway === 'bus_stop') {
-    return CATEGORIES.transit;
   }
 
   return null;
 }
 
 /**
- * Provide sensible fallback names when OSM features have no explicit name tag
+ * Fallback name helper
  */
-function getDefaultNameForTag(tags, category) {
-  if (tags.amenity === 'toilets') return 'Public Toilet';
-  if (tags.amenity === 'drinking_water') return 'Drinking Water Point';
-  if (tags.highway === 'bus_stop') return tags.bus_stop || 'Mangalore Bus Stop';
-  if (tags.amenity === 'bus_station') return 'Bus Station';
-  if (tags.shop === 'hardware') return 'Hardware Store';
-  if (tags.shop === 'paint') return 'Paint & Hardware Shop';
-  if (tags.shop === 'electrical') return 'Electrical Shop';
-  if (tags.shop === 'plumbing') return 'Plumbing Supplies Store';
-  if (tags.amenity === 'pharmacy') return 'Medical & Pharmacy Store';
-  return `${category.name} Facility`;
+function fallbackName(tags, catKey) {
+  if (catKey === 'water') return 'Public Drinking Water Point';
+  if (catKey === 'toilet') return 'Public Toilet';
+  if (catKey === 'bus') return tags.bus_stop || 'Bus Stop';
+  if (catKey === 'hardware') return 'Hardware & Tools Shop';
+  if (catKey === 'repair') return 'Repair & Service Shop';
+  if (catKey === 'pharmacy') return 'Pharmacy & Medical Store';
+  if (catKey === 'stationery') return 'Stationery & Xerox';
+  if (catKey === 'food') return 'Local Food / Snacks';
+  return 'Local Utility Facility';
 }
 
 /**
- * Bind UI Events
+ * Bind UI Listeners
  */
 function bindUIEvents() {
-  // Search Input
   const searchInput = document.getElementById('search-input');
   const searchClear = document.getElementById('search-clear');
 
   searchInput.addEventListener('input', debounce((e) => {
     state.searchQuery = e.target.value.trim().toLowerCase();
-    searchClear.style.display = state.searchQuery ? 'inline-flex' : 'none';
+    searchClear.style.display = state.searchQuery ? 'inline-block' : 'none';
     applyFiltersAndRender();
-  }, 200));
+  }, 180));
 
   searchClear.addEventListener('click', () => {
     searchInput.value = '';
@@ -638,9 +680,8 @@ function bindUIEvents() {
     applyFiltersAndRender();
   });
 
-  // Category Filter Chips
-  const chipContainer = document.getElementById('category-chips');
-  chipContainer.addEventListener('click', (e) => {
+  // Category filter chips
+  document.getElementById('category-chips').addEventListener('click', (e) => {
     const chip = e.target.closest('.chip');
     if (!chip) return;
 
@@ -651,13 +692,13 @@ function bindUIEvents() {
     applyFiltersAndRender();
   });
 
-  // Sort Dropdown
+  // Sort dropdown
   document.getElementById('sort-select').addEventListener('change', (e) => {
     state.sortBy = e.target.value;
     applyFiltersAndRender();
   });
 
-  // Reset Filters Button in Empty State
+  // Reset filters
   document.getElementById('btn-reset-filters').addEventListener('click', () => {
     state.activeCategory = 'all';
     state.searchQuery = '';
@@ -669,20 +710,17 @@ function bindUIEvents() {
     applyFiltersAndRender();
   });
 
-  // Geolocation Button ("Near Me")
+  // Geolocation
   document.getElementById('btn-locate').addEventListener('click', locateUser);
 
-  // Sync OSM Button
-  document.getElementById('btn-refresh').addEventListener('click', () => {
+  // Sync OSM
+  document.getElementById('btn-sync').addEventListener('click', () => {
     fetchOverpassData();
   });
 
-  // Contribute Modal
-  const modal = document.getElementById('contribute-modal');
-  document.getElementById('btn-contribute-modal').addEventListener('click', () => {
-    modal.style.display = 'flex';
-  });
-  document.getElementById('notice-add-btn').addEventListener('click', () => {
+  // Contribution Modal Triggers
+  const modal = document.getElementById('contrib-modal');
+  document.getElementById('btn-toggle-contrib').addEventListener('click', () => {
     modal.style.display = 'flex';
   });
   document.getElementById('btn-close-modal').addEventListener('click', () => {
@@ -692,26 +730,37 @@ function bindUIEvents() {
     if (e.target === modal) modal.style.display = 'none';
   });
 
-  // Floating Map Buttons
-  document.getElementById('btn-add-here').addEventListener('click', () => {
+  // Direct OSM Edit links
+  document.getElementById('btn-edit-osm-center').addEventListener('click', () => {
     const center = map.getCenter();
     const zoom = Math.max(17, map.getZoom());
-    const editUrl = `https://www.openstreetmap.org/edit#map=${zoom}/${center.lat.toFixed(5)}/${center.lng.toFixed(5)}`;
-    window.open(editUrl, '_blank', 'noopener');
+    window.open(`https://www.openstreetmap.org/edit#map=${zoom}/${center.lat.toFixed(5)}/${center.lng.toFixed(5)}`, '_blank', 'noopener');
   });
 
-  document.getElementById('btn-osm-notes').addEventListener('click', () => {
+  document.getElementById('btn-float-add').addEventListener('click', () => {
+    const center = map.getCenter();
+    const zoom = Math.max(17, map.getZoom());
+    window.open(`https://www.openstreetmap.org/edit#map=${zoom}/${center.lat.toFixed(5)}/${center.lng.toFixed(5)}`, '_blank', 'noopener');
+  });
+
+  document.getElementById('btn-report-note').addEventListener('click', () => {
     const center = map.getCenter();
     const zoom = Math.max(16, map.getZoom());
-    const noteUrl = `https://www.openstreetmap.org/note/new#map=${zoom}/${center.lat.toFixed(5)}/${center.lng.toFixed(5)}`;
-    window.open(noteUrl, '_blank', 'noopener');
+    window.open(`https://www.openstreetmap.org/note/new#map=${zoom}/${center.lat.toFixed(5)}/${center.lng.toFixed(5)}`, '_blank', 'noopener');
   });
 
-  // Mobile View Toggle
-  document.getElementById('btn-toggle-view').addEventListener('click', () => {
-    const sidebar = document.getElementById('sidebar');
-    sidebar.classList.toggle('collapsed');
-  });
+  // Mobile Drawer Toggle
+  const mobileToggleBtn = document.getElementById('btn-mobile-toggle');
+  const sidebar = document.getElementById('sidebar');
+  const toggleText = document.getElementById('mobile-toggle-text');
+
+  if (mobileToggleBtn) {
+    mobileToggleBtn.addEventListener('click', () => {
+      sidebar.classList.toggle('collapsed');
+      const isCollapsed = sidebar.classList.contains('collapsed');
+      toggleText.textContent = isCollapsed ? 'View Places List' : 'Hide Places List';
+    });
+  }
 }
 
 /**
@@ -719,12 +768,10 @@ function bindUIEvents() {
  */
 function applyFiltersAndRender() {
   let list = state.places.filter(place => {
-    // Category match
     if (state.activeCategory !== 'all' && place.category !== state.activeCategory) {
       return false;
     }
 
-    // Keyword match
     if (state.searchQuery) {
       const q = state.searchQuery;
       const matchName = place.name.toLowerCase().includes(q);
@@ -742,7 +789,6 @@ function applyFiltersAndRender() {
     return true;
   });
 
-  // Sort list
   if (state.sortBy === 'name') {
     list.sort((a, b) => a.name.localeCompare(b.name));
   } else if (state.sortBy === 'distance' && state.userLocation) {
@@ -751,15 +797,15 @@ function applyFiltersAndRender() {
 
   state.filteredPlaces = list;
 
-  renderSidebarList(list);
-  renderMapMarkers(list);
-  updateResultCount(list.length);
+  renderSidebarCards(list);
+  renderMapPins(list);
+  updateResultCounts(list.length);
 }
 
 /**
- * Render Sidebar Directory Cards
+ * Render Sidebar Cards
  */
-function renderSidebarList(places) {
+function renderSidebarCards(places) {
   const container = document.getElementById('places-list');
   const emptyState = document.getElementById('empty-state');
 
@@ -772,18 +818,15 @@ function renderSidebarList(places) {
   emptyState.style.display = 'none';
 
   const html = places.map(place => {
-    const cat = CATEGORIES[place.category] || { name: 'General', icon: '📍' };
+    const cat = CATEGORIES[place.category] || { name: 'Utility', icon: '📍' };
     const isSelected = state.selectedPlaceId === place.id;
-    const osmUrl = place.osmId 
-      ? `https://www.openstreetmap.org/${place.osmType || 'node'}/${place.osmId}`
-      : `https://www.openstreetmap.org/search?query=${encodeURIComponent(place.name + ' Mangalore')}`;
     const osmEditUrl = `https://www.openstreetmap.org/edit?${place.osmType || 'node'}=${place.osmId}#map=19/${place.lat}/${place.lon}`;
     const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${place.lat},${place.lon}`;
 
     return `
       <div class="place-card ${isSelected ? 'selected' : ''}" data-id="${place.id}" role="listitem">
         <div class="card-top">
-          <span class="card-category-badge ${place.category}">
+          <span class="category-badge ${place.category}">
             <span>${cat.icon}</span>
             <span>${cat.name}</span>
           </span>
@@ -792,12 +835,12 @@ function renderSidebarList(places) {
 
         <div>
           <h3 class="card-title">${escapeHTML(place.name)}</h3>
-          ${place.nameKn ? `<div class="card-kannada-name">${escapeHTML(place.nameKn)}</div>` : ''}
+          ${place.nameKn ? `<div class="card-kn-name">${escapeHTML(place.nameKn)}</div>` : ''}
         </div>
 
-        <div class="card-meta-list">
+        <div class="card-meta">
           ${place.street ? `
-            <div class="card-meta-item">
+            <div class="meta-row">
               <svg class="meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
               </svg>
@@ -806,7 +849,7 @@ function renderSidebarList(places) {
           ` : ''}
 
           ${place.openingHours ? `
-            <div class="card-meta-item">
+            <div class="meta-row">
               <svg class="meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
               </svg>
@@ -815,36 +858,29 @@ function renderSidebarList(places) {
           ` : ''}
 
           ${place.phone ? `
-            <div class="card-meta-item">
+            <div class="meta-row">
               <svg class="meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
               </svg>
-              <a href="tel:${escapeHTML(place.phone)}" class="link-btn">${escapeHTML(place.phone)}</a>
+              <a href="tel:${escapeHTML(place.phone)}" class="btn-link">${escapeHTML(place.phone)}</a>
             </div>
           ` : ''}
         </div>
 
         <div class="card-actions">
-          <button class="card-btn primary btn-zoom-place" data-id="${place.id}">
-            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2">
+          <button class="card-btn primary btn-focus-marker" data-id="${place.id}">
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2">
               <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
             </svg>
             Show on Map
           </button>
           
           <a href="${directionsUrl}" target="_blank" rel="noopener" class="card-btn" title="Get Directions">
-            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2">
-              <polyline points="9 11 12 14 22 4"/>
-              <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
-            </svg>
             Directions
           </a>
 
-          <a href="${osmEditUrl}" target="_blank" rel="noopener" class="card-btn" title="Edit shop details on OpenStreetMap">
-            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
-            </svg>
-            Edit OSM
+          <a href="${osmEditUrl}" target="_blank" rel="noopener" class="card-btn" title="Edit details on OpenStreetMap">
+            Edit on OSM
           </a>
         </div>
       </div>
@@ -853,48 +889,43 @@ function renderSidebarList(places) {
 
   container.innerHTML = html;
 
-  // Add click listeners to place cards
+  // Event handlers on cards
   container.querySelectorAll('.place-card').forEach(card => {
     card.addEventListener('click', (e) => {
       if (e.target.tagName === 'A') return;
-      const id = card.dataset.id;
-      selectAndFocusPlace(id, true);
+      selectAndFocusPlace(card.dataset.id, true);
     });
   });
 
-  container.querySelectorAll('.btn-zoom-place').forEach(btn => {
+  container.querySelectorAll('.btn-focus-marker').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
-      const id = btn.dataset.id;
-      selectAndFocusPlace(id, true);
+      selectAndFocusPlace(btn.dataset.id, true);
     });
   });
 }
 
 /**
- * Render Leaflet Map Markers
+ * Render Map Pins
  */
-function renderMapMarkers(places) {
+function renderMapPins(places) {
   markersLayerGroup.clearLayers();
   markerMap.clear();
 
   places.forEach(place => {
     const cat = CATEGORIES[place.category] || { icon: '📍' };
-    
-    // Custom DivIcon for Leaflet
+
     const icon = L.divIcon({
-      className: 'custom-marker-wrapper',
+      className: 'marker-wrapper',
       html: `<div class="custom-map-marker ${place.category}" title="${escapeHTML(place.name)}">${cat.icon}</div>`,
-      iconSize: [34, 34],
-      iconAnchor: [17, 17],
-      popupAnchor: [0, -18]
+      iconSize: [32, 32],
+      iconAnchor: [16, 16],
+      popupAnchor: [0, -16]
     });
 
     const marker = L.marker([place.lat, place.lon], { icon }).addTo(markersLayerGroup);
-
-    // Popup Content HTML
-    const popupContent = createPopupHTML(place);
-    marker.bindPopup(popupContent, { maxWidth: 320, className: 'custom-leaflet-popup' });
+    const popupHTML = createPopupHTML(place);
+    marker.bindPopup(popupHTML, { maxWidth: 310 });
 
     marker.on('click', () => {
       selectAndFocusPlace(place.id, false);
@@ -905,52 +936,30 @@ function renderMapMarkers(places) {
 }
 
 /**
- * Generate Popup HTML for a Place
+ * Popup Content
  */
 function createPopupHTML(place) {
-  const cat = CATEGORIES[place.category] || { name: 'General', icon: '📍' };
+  const cat = CATEGORIES[place.category] || { name: 'Utility', icon: '📍' };
   const osmUrl = place.osmId 
     ? `https://www.openstreetmap.org/${place.osmType || 'node'}/${place.osmId}`
-    : `https://www.openstreetmap.org/`;
+    : `https://www.openstreetmap.org/search?query=${encodeURIComponent(place.name)}`;
   const osmEditUrl = `https://www.openstreetmap.org/edit?${place.osmType || 'node'}=${place.osmId}#map=19/${place.lat}/${place.lon}`;
   const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${place.lat},${place.lon}`;
 
   return `
     <div class="popup-container">
-      <div class="popup-header">
-        <span class="card-category-badge ${place.category}">
-          <span>${cat.icon}</span>
-          <span>${cat.name}</span>
-        </span>
-        <h4 class="popup-title">${escapeHTML(place.name)}</h4>
-        ${place.nameKn ? `<div class="popup-kannada">${escapeHTML(place.nameKn)}</div>` : ''}
-      </div>
+      <span class="category-badge ${place.category}">
+        <span>${cat.icon}</span>
+        <span>${cat.name}</span>
+      </span>
+      <h4 class="popup-title">${escapeHTML(place.name)}</h4>
+      ${place.nameKn ? `<div class="popup-kn">${escapeHTML(place.nameKn)}</div>` : ''}
 
-      <div class="popup-info-grid">
-        ${place.street ? `
-          <div class="popup-info-row">
-            <span>📍</span>
-            <span>${escapeHTML(place.street)}</span>
-          </div>
-        ` : ''}
-        ${place.openingHours ? `
-          <div class="popup-info-row">
-            <span>🕒</span>
-            <span>${escapeHTML(place.openingHours)}</span>
-          </div>
-        ` : ''}
-        ${place.phone ? `
-          <div class="popup-info-row">
-            <span>📞</span>
-            <a href="tel:${escapeHTML(place.phone)}" class="link-btn">${escapeHTML(place.phone)}</a>
-          </div>
-        ` : ''}
-        ${place.distanceText ? `
-          <div class="popup-info-row">
-            <span>🧭</span>
-            <strong>${place.distanceText} from you</strong>
-          </div>
-        ` : ''}
+      <div class="popup-meta">
+        ${place.street ? `<div>📍 ${escapeHTML(place.street)}</div>` : ''}
+        ${place.openingHours ? `<div>🕒 ${escapeHTML(place.openingHours)}</div>` : ''}
+        ${place.phone ? `<div>📞 <a href="tel:${escapeHTML(place.phone)}" class="btn-link">${escapeHTML(place.phone)}</a></div>` : ''}
+        ${place.distanceText ? `<div>🧭 <strong>${place.distanceText} away</strong></div>` : ''}
       </div>
 
       <div class="popup-actions">
@@ -960,7 +969,7 @@ function createPopupHTML(place) {
         <a href="${osmEditUrl}" target="_blank" rel="noopener" class="card-btn" title="Edit on OpenStreetMap">
           Edit OSM
         </a>
-        <a href="${osmUrl}" target="_blank" rel="noopener" class="card-btn" title="View node/way on OpenStreetMap">
+        <a href="${osmUrl}" target="_blank" rel="noopener" class="card-btn" title="View on OpenStreetMap">
           View on OSM
         </a>
       </div>
@@ -969,27 +978,25 @@ function createPopupHTML(place) {
 }
 
 /**
- * Select a place, pan map, highlight sidebar card
+ * Card <-> Marker Focus synchronization
  */
-function selectAndFocusPlace(placeId, shouldPanMap = true) {
+function selectAndFocusPlace(placeId, shouldFly = true) {
   state.selectedPlaceId = placeId;
 
-  // Highlight card in sidebar
   document.querySelectorAll('.place-card').forEach(c => {
     c.classList.toggle('selected', c.dataset.id === placeId);
   });
 
-  const selectedCard = document.querySelector(`.place-card[data-id="${placeId}"]`);
-  if (selectedCard) {
-    selectedCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  const card = document.querySelector(`.place-card[data-id="${placeId}"]`);
+  if (card) {
+    card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
 
-  // Focus map marker
   const marker = markerMap.get(placeId);
   const place = state.places.find(p => p.id === placeId);
 
   if (marker && place) {
-    if (shouldPanMap) {
+    if (shouldFly) {
       map.flyTo([place.lat, place.lon], 16, { duration: 0.8 });
     }
     marker.openPopup();
@@ -997,7 +1004,7 @@ function selectAndFocusPlace(placeId, shouldPanMap = true) {
 }
 
 /**
- * Geolocation ("Near Me") Handler
+ * Geolocation ("Near Me")
  */
 function locateUser() {
   if (!navigator.geolocation) {
@@ -1012,12 +1019,11 @@ function locateUser() {
       const { latitude, longitude } = pos.coords;
       state.userLocation = { lat: latitude, lon: longitude };
 
-      // Add or move user marker
       if (userMarker) {
         userMarker.setLatLng([latitude, longitude]);
       } else {
         const userIcon = L.divIcon({
-          className: 'user-location-wrapper',
+          className: 'user-icon-wrap',
           html: `<div class="user-location-marker" title="You are here"></div>`,
           iconSize: [18, 18],
           iconAnchor: [9, 9]
@@ -1025,50 +1031,47 @@ function locateUser() {
         userMarker = L.marker([latitude, longitude], { icon: userIcon, zIndexOffset: 2000 }).addTo(map);
       }
 
-      // Calculate distances for all places
-      state.places.forEach(place => {
-        const d = calculateDistance(latitude, longitude, place.lat, place.lon);
-        place.distanceKm = d;
-        place.distanceText = d < 1 ? `${Math.round(d * 1000)} m` : `${d.toFixed(1)} km`;
+      state.places.forEach(p => {
+        const d = calculateDistance(latitude, longitude, p.lat, p.lon);
+        p.distanceKm = d;
+        p.distanceText = d < 1 ? `${Math.round(d * 1000)} m` : `${d.toFixed(1)} km`;
       });
 
-      // Enable sort by distance
-      const sortDistanceOpt = document.getElementById('sort-distance-opt');
-      sortDistanceOpt.disabled = false;
-      sortDistanceOpt.textContent = 'Nearest First';
+      const opt = document.getElementById('sort-distance-opt');
+      opt.disabled = false;
+      opt.textContent = 'Distance (Nearest First)';
       
       document.getElementById('sort-select').value = 'distance';
       state.sortBy = 'distance';
 
       map.flyTo([latitude, longitude], 15, { duration: 1 });
-      showToast('Location updated! Sorting by nearest places.');
+      showToast('Location updated! Sorted by distance.');
       applyFiltersAndRender();
     },
     (err) => {
       console.warn('Geolocation error:', err);
-      showToast('Could not fetch location. Please check browser permissions.');
+      showToast('Could not access location. Please check browser permissions.');
     },
     { enableHighAccuracy: true, timeout: 10000 }
   );
 }
 
 /**
- * Calculate Great-Circle Distance (Haversine formula in KM)
+ * Haversine formula
  */
 function calculateDistance(lat1, lon1, lat2, lon2) {
-  const R = 6371; // Earth radius in km
+  const R = 6371;
   const dLat = (lat2 - lat1) * Math.PI / 180;
   const dLon = (lon2 - lon1) * Math.PI / 180;
   const a = 
     Math.sin(dLat / 2) * Math.sin(dLat / 2) +
     Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
     Math.sin(dLon / 2) * Math.sin(dLon / 2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  return R * c;
+  return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
 }
 
 /**
- * Update Category Count Badges
+ * Category Counts
  */
 function renderCategoryCounts() {
   const counts = { all: state.places.length };
@@ -1087,51 +1090,38 @@ function renderCategoryCounts() {
   });
 }
 
-/**
- * Update Sidebar Result Count
- */
-function updateResultCount(count) {
-  const text = count === 1 ? 'Showing 1 place' : `Showing ${count} places`;
-  document.getElementById('results-count').textContent = text;
+function updateResultCounts(count) {
+  document.getElementById('results-count').textContent = count === 1 ? 'Showing 1 place' : `Showing ${count} places`;
 }
 
-/**
- * Update Live/Cached Status Indicator
- */
-function updateStatusBadge(type, label) {
-  const indicator = document.querySelector('.status-indicator');
-  const textEl = document.getElementById('data-status-text');
+function updateStatusPill(type, text) {
+  const dot = document.querySelector('.status-dot');
+  const textEl = document.getElementById('status-text');
 
-  indicator.className = `status-indicator ${type}`;
-  textEl.textContent = label;
+  if (type === 'live') dot.style.backgroundColor = '#10b981';
+  else if (type === 'loading') dot.style.backgroundColor = '#3b82f6';
+  else dot.style.backgroundColor = '#f59e0b';
+
+  textEl.textContent = text;
 }
 
-/**
- * Update Dynamic Modal Links with current map center
- */
 function updateModalCenterLinks() {
   if (!map) return;
   const center = map.getCenter();
   const zoom = Math.max(16, map.getZoom());
-  const editUrl = `https://www.openstreetmap.org/edit#map=${zoom}/${center.lat.toFixed(5)}/${center.lng.toFixed(5)}`;
-  
-  const modalLink = document.getElementById('modal-osm-edit-link');
-  if (modalLink) modalLink.href = editUrl;
+  const link = document.getElementById('modal-edit-link');
+  if (link) {
+    link.href = `https://www.openstreetmap.org/edit#map=${zoom}/${center.lat.toFixed(5)}/${center.lng.toFixed(5)}`;
+  }
 }
 
-/**
- * Display Toast Notification
- */
-function showToast(message) {
+function showToast(msg) {
   const toast = document.getElementById('toast');
-  toast.textContent = message;
+  toast.textContent = msg;
   toast.classList.add('show');
-  setTimeout(() => toast.classList.remove('show'), 3500);
+  setTimeout(() => toast.classList.remove('show'), 3200);
 }
 
-/**
- * Escape HTML utility
- */
 function escapeHTML(str) {
   if (!str) return '';
   return String(str)
@@ -1142,9 +1132,6 @@ function escapeHTML(str) {
     .replace(/'/g, '&#039;');
 }
 
-/**
- * Debounce utility
- */
 function debounce(fn, delay) {
   let timer = null;
   return function(...args) {
