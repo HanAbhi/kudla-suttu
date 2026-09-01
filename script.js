@@ -1,6 +1,6 @@
 /**
- * Kudla Suttu - Open Local Utility Map Engine (Stitch Spec)
- * Powered by OpenStreetMap & Leaflet.js
+ * Kudla Suttu - Open Local Utility Map & Scroll-World 3D Engine
+ * Powered by OpenStreetMap, Leaflet.js & Canvas 3D Flight Physics
  */
 
 // Core Configuration
@@ -422,12 +422,131 @@ const markerMap = new Map();
  * Initialize on DOM Loaded
  */
 document.addEventListener('DOMContentLoaded', () => {
+  initScrollWorldEngine();
   initMap();
   initPlacesData();
   bindUIEvents();
   renderCategoryCounts();
   applyFiltersAndRender();
 });
+
+/**
+ * ========================================================
+ * SCROLL-WORLD 3D FLIGHT & ATMOSPHERE CANVAS ENGINE
+ * ========================================================
+ */
+function initScrollWorldEngine() {
+  const container = document.getElementById('scroll-world-stage');
+  const progressBar = document.getElementById('flight-progress-bar');
+  const scene1 = document.getElementById('scene-1');
+  const scene2 = document.getElementById('scene-2');
+  const scene3 = document.getElementById('scene-3');
+  const canvas = document.getElementById('scroll-world-canvas');
+  if (!container || !canvas) return;
+
+  const ctx = canvas.getContext('2d');
+  let width = (canvas.width = window.innerWidth);
+  let height = (canvas.height = window.innerHeight);
+
+  // Resize listener
+  window.addEventListener('resize', () => {
+    width = canvas.width = window.innerWidth;
+    height = canvas.height = window.innerHeight;
+  });
+
+  // Particle System
+  const particles = Array.from({ length: 45 }, () => ({
+    x: Math.random() * width,
+    y: Math.random() * height,
+    radius: Math.random() * 2 + 0.8,
+    speedY: Math.random() * 0.4 + 0.2,
+    alpha: Math.random() * 0.6 + 0.2
+  }));
+
+  // Scroll Scrubbing
+  function updateScrollWorld() {
+    const rect = container.getBoundingClientRect();
+    const scrollRange = container.offsetHeight - window.innerHeight;
+    const progress = Math.min(Math.max(-rect.top / scrollRange, 0), 1);
+
+    if (progressBar) {
+      progressBar.style.width = `${progress * 100}%`;
+    }
+
+    // Scene 1: Coastline (0.0 to 0.38)
+    if (scene1) {
+      const p1 = Math.min(Math.max((progress - 0.0) / 0.35, 0), 1);
+      const z1 = -p1 * 600;
+      const opacity1 = 1 - Math.pow(p1, 2.5);
+      scene1.style.transform = `translate3d(0, ${-p1 * 80}px, ${z1}px) rotateX(${p1 * 12}deg)`;
+      scene1.style.opacity = Math.max(opacity1, 0);
+      scene1.style.pointerEvents = opacity1 > 0.3 ? 'auto' : 'none';
+    }
+
+    // Scene 2: Bazaars & Utilities (0.35 to 0.72)
+    if (scene2) {
+      const p2 = Math.min(Math.max((progress - 0.32) / 0.35, 0), 1);
+      const z2 = (1 - p2) * 500 - p2 * 450;
+      let opacity2 = 0;
+      if (progress >= 0.28 && progress <= 0.75) {
+        if (progress < 0.5) opacity2 = (progress - 0.28) / 0.15;
+        else opacity2 = 1 - (progress - 0.55) / 0.2;
+      }
+      scene2.style.transform = `translate3d(0, ${(1 - p2) * 60}px, ${z2}px) rotateY(${(p2 - 0.5) * 8}deg)`;
+      scene2.style.opacity = Math.min(Math.max(opacity2, 0), 1);
+      scene2.style.pointerEvents = opacity2 > 0.3 ? 'auto' : 'none';
+    }
+
+    // Scene 3: OpenStreetMap Descent (0.68 to 1.0)
+    if (scene3) {
+      const p3 = Math.min(Math.max((progress - 0.65) / 0.35, 0), 1);
+      const z3 = (1 - p3) * 600;
+      const opacity3 = p3;
+      scene3.style.transform = `translate3d(0, ${(1 - p3) * 70}px, ${z3}px) scale(${0.8 + p3 * 0.2})`;
+      scene3.style.opacity = opacity3;
+      scene3.style.pointerEvents = opacity3 > 0.3 ? 'auto' : 'none';
+    }
+  }
+
+  // Animation Loop for Canvas
+  function drawCanvas() {
+    ctx.clearRect(0, 0, width, height);
+
+    // Subtle Wave Grid Lines
+    ctx.strokeStyle = 'rgba(20, 114, 125, 0.18)';
+    ctx.lineWidth = 1;
+    const time = Date.now() * 0.001;
+
+    for (let y = height * 0.55; y < height; y += 42) {
+      ctx.beginPath();
+      for (let x = 0; x < width; x += 15) {
+        const wave = Math.sin(x * 0.005 + time + y * 0.02) * 6;
+        if (x === 0) ctx.moveTo(x, y + wave);
+        else ctx.lineTo(x, y + wave);
+      }
+      ctx.stroke();
+    }
+
+    // Floating Particles
+    particles.forEach(p => {
+      p.y -= p.speedY;
+      if (p.y < 0) {
+        p.y = height;
+        p.x = Math.random() * width;
+      }
+      ctx.fillStyle = `rgba(235, 105, 78, ${p.alpha})`;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+      ctx.fill();
+    });
+
+    requestAnimationFrame(drawCanvas);
+  }
+
+  window.addEventListener('scroll', updateScrollWorld, { passive: true });
+  updateScrollWorld();
+  drawCanvas();
+}
 
 /**
  * Setup Leaflet Map
@@ -648,7 +767,23 @@ function fallbackName(tags, catKey) {
  * UI Event Bindings
  */
 function bindUIEvents() {
-  // Start Exploring Button (smooth scroll to map)
+  // Jump / Skip Flight to Map
+  const btnJumpMap = document.getElementById('btn-jump-map');
+  if (btnJumpMap) {
+    btnJumpMap.addEventListener('click', () => {
+      scrollToMapArea();
+    });
+  }
+
+  // Replay Flight (back to top)
+  const btnReplayFlight = document.getElementById('btn-replay-flight');
+  if (btnReplayFlight) {
+    btnReplayFlight.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
+
+  // Explore directory button
   const btnScrollToMap = document.getElementById('btn-scroll-to-map');
   if (btnScrollToMap) {
     btnScrollToMap.addEventListener('click', () => {
@@ -696,7 +831,8 @@ function bindUIEvents() {
     applyFiltersAndRender();
     
     // Smooth scroll to map if at top of page
-    if (window.scrollY < 120) {
+    const mapSection = document.getElementById('map-section');
+    if (mapSection && window.scrollY < mapSection.offsetTop - 50) {
       scrollToMapArea();
     }
   });
@@ -767,7 +903,7 @@ function scrollToMapArea() {
     mapSection.scrollIntoView({ behavior: 'smooth' });
     setTimeout(() => {
       if (map) map.invalidateSize();
-    }, 380);
+    }, 450);
   }
 }
 

@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kudla Suttu | ಕುಡ್ಲ ಸುತ್ತು - Mangalore Local Utility Map</title>
-  <meta name="description" content="Open local utility map for Mangalore (Kudla), Karnataka. Find hardware, repairs, xerox, pharmacies, public toilets, drinking water, bus stops, and budget food using OpenStreetMap.">
+  <title>Kudla Suttu | ಕುಡ್ಲ ಸುತ್ತu - Mangalore Local Utility Map & Scroll World</title>
+  <meta name="description" content="An immersive open-source local utility map and scroll-through world for Mangalore (Kudla), Karnataka. Powered by Leaflet.js, OpenStreetMap, and Scroll-World engine.">
   
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+Kannada:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+Kannada:wght@400;600;700;800&family=Cinzel:wght@700&display=swap" rel="stylesheet">
   
   <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
@@ -20,7 +20,102 @@
 <body>
 
   <!-- ========================================================
-       1. COMPACT POLISHED INTRO HERO SECTION
+       1. SCROLL-WORLD 3D IMMERSIVE FLY-THROUGH SECTION
+       ======================================================== -->
+  <section class="scroll-world-container" id="scroll-world-stage">
+    
+    <!-- Fixed Viewport Canvas & Layers -->
+    <div class="scroll-world-viewport">
+      
+      <!-- Interactive Canvas Background (Parallax Stars, Waves, Atmospheric Dust) -->
+      <canvas id="scroll-world-canvas" class="scroll-world-canvas"></canvas>
+
+      <!-- 3D Camera Rig -->
+      <div class="camera-rig" id="camera-rig">
+        
+        <!-- Vista 1: Coastal Kudla & Port -->
+        <div class="diorama-scene scene-coast" id="scene-1">
+          <div class="diorama-badge">
+            <span class="badge-icon">⚓</span>
+            <span class="badge-text">VISTA I &bull; ARABIAN SEA COASTLINE</span>
+          </div>
+          <h2 class="scene-title">Welcome to Kudla</h2>
+          <p class="scene-sub">Where the Netravati meets the Arabian Sea &bull; Coastal Karnataka</p>
+          <div class="scene-illustration">
+            <div class="coastal-waves"></div>
+            <div class="lighthouse-glow"></div>
+          </div>
+        </div>
+
+        <!-- Vista 2: Bustling Neighbourhoods & Utility Hubs -->
+        <div class="diorama-scene scene-bazaar" id="scene-2">
+          <div class="diorama-badge">
+            <span class="badge-icon">⚙️</span>
+            <span class="badge-text">VISTA II &bull; EVERYDAY UTILITIES</span>
+          </div>
+          <h2 class="scene-title">Hampankatta, Car Street & Kadri</h2>
+          <p class="scene-sub">Neighbourhood hardware stores, Xerox shacks, cobblers & water kiosks</p>
+          <div class="scene-features-grid">
+            <span class="scene-pill">🔧 Hardware & Paints</span>
+            <span class="scene-pill">⚙️ Electronics & Bike Clinics</span>
+            <span class="scene-pill">📚 Xerox & Print Centers</span>
+            <span class="scene-pill">💧 Clean Drinking Water</span>
+          </div>
+        </div>
+
+        <!-- Vista 3: OpenStreetMap Descent -->
+        <div class="diorama-scene scene-descent" id="scene-3">
+          <div class="diorama-badge">
+            <span class="badge-icon">🗺️</span>
+            <span class="badge-text">VISTA III &bull; OPEN COMMUNITY MAP</span>
+          </div>
+          <h2 class="scene-title">Descent into the Live Directory</h2>
+          <p class="scene-sub">Scroll to land directly onto the interactive Kudla Suttu Map</p>
+          <div class="descent-compass">
+            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <polygon points="12 4 16 12 12 10 8 12 12 4" fill="currentColor"/>
+              <polygon points="12 20 16 12 12 14 8 12 12 20" fill="currentColor" opacity="0.4"/>
+            </svg>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Top Overlay Navigation Bar -->
+      <nav class="scroll-world-topbar">
+        <div class="sw-brand">
+          <span class="sw-logo">📍</span>
+          <strong>Kudla Suttu</strong>
+          <span class="sw-kn">ಕುಡ್ಲ ಸುತ್ತು</span>
+        </div>
+
+        <div class="sw-controls">
+          <!-- Scroll flight progress bar -->
+          <div class="flight-progress-wrap" title="Flight progress to map">
+            <div class="flight-progress-bar" id="flight-progress-bar"></div>
+          </div>
+          
+          <button id="btn-jump-map" class="btn btn-sm btn-coral">
+            <span>Skip Flight &rarr; Go to Map</span>
+          </button>
+        </div>
+      </nav>
+
+      <!-- Scroll Prompter -->
+      <div class="scroll-prompter" id="scroll-prompter">
+        <span class="prompter-txt">SCROLL TO FLY THROUGH KUDLA</span>
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" class="prompter-arrow">
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- ========================================================
+       2. COMPACT INTRO HEADER & CATEGORY CHIPS
        ======================================================== -->
   <header class="intro-section" id="intro-section">
     <div class="intro-container">
@@ -43,6 +138,9 @@
         </div>
 
         <div class="intro-quick-actions">
+          <button id="btn-replay-flight" class="btn btn-sm btn-outline-teal" title="Fly through Kudla Scroll World">
+            <span>🚀 3D Flight</span>
+          </button>
           <button id="btn-intro-locate" class="btn btn-sm btn-outline-teal" title="Locate places near you">
             <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2">
               <circle cx="12" cy="12" r="7"/><polyline points="12 2 12 5 12 19 12 22"/><polyline points="2 12 5 12 19 12 22 12"/>
@@ -53,7 +151,7 @@
             <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2">
               <path d="M12 5v14M5 12h14"/>
             </svg>
-            <span>Contribute to OSM</span>
+            <span>Contribute</span>
           </button>
         </div>
       </div>
@@ -117,7 +215,7 @@
       <!-- Bottom Row: Start Exploring Action + 3-Step Contribution Strip -->
       <div class="intro-bottom-row">
         <button id="btn-scroll-to-map" class="btn-start-exploring">
-          <span>Start exploring</span>
+          <span>Explore directory</span>
           <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" class="arrow-down">
             <polyline points="6 9 12 15 18 9"/>
           </svg>
@@ -146,7 +244,7 @@
   </header>
 
   <!-- ========================================================
-       2. MAIN MAP & DIRECTORY WORKSPACE
+       3. MAIN MAP & DIRECTORY WORKSPACE
        ======================================================== -->
   <main class="map-workspace" id="map-section">
     
@@ -167,7 +265,7 @@
             aria-label="Search places in Mangalore"
           >
           <button id="search-clear" class="clear-btn" aria-label="Clear search" style="display: none;">&times;</button>
-          <span class="search-kbd-hint" title="Press Ctrl + K to focus search">/</span>
+          <span class="search-kbd-hint" title="Press / to focus search">/</span>
         </div>
       </div>
 
@@ -252,7 +350,7 @@
   </main>
 
   <!-- ========================================================
-       3. CONTRIBUTION & TAGGING GUIDE MODAL
+       4. CONTRIBUTION & TAGGING GUIDE MODAL
        ======================================================== -->
   <div class="modal-backdrop" id="contrib-modal" style="display: none;">
     <div class="modal-card">
@@ -369,7 +467,7 @@
   <!-- Leaflet JS -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   
-  <!-- App Engine -->
+  <!-- App Engine with Scroll-World Integration -->
   <script src="script.js"></script>
 </body>
 </html>
