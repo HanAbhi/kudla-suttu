@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kudla Suttu | ಕುಡ್ಲ ಸುತ್ತು - Mangalore Civic & Local Discovery Map</title>
+  <meta name="description" content="Open-source civic discovery map for Mangalore (Kudla), Karnataka. Find hardware, repairs, stationery, pharmacies, food, public toilets, and transit using OpenStreetMap.">
+  
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+Kannada:wght@400;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app" class="app-container">
+    
+    <!-- Top Civic Header -->
+    <header class="app-header">
+      <div class="header-brand">
+        <div class="brand-badge">
+          <svg class="brand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z"/>
+            <circle cx="12" cy="10" r="3"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1 class="brand-title">Kudla Suttu <span class="brand-kannada">ಕುಡ್ಲ ಸುತ್ತು</span></h1>
+          <p class="brand-tagline">Mangalore Civic & Essential Services Map &bull; Powered by OpenStreetMap</p>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button id="btn-locate" class="btn btn-outline" title="Center map on your current location">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="7"/>
+            <polyline points="12 2 12 5 12 19 12 22"/>
+            <polyline points="2 12 5 12 19 12 22 12"/>
+          </svg>
+          <span class="btn-text">Near Me</span>
+        </button>
+
+        <button id="btn-refresh" class="btn btn-outline" title="Refresh data from OpenStreetMap">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.3"/>
+          </svg>
+          <span class="btn-text">Sync OSM</span>
+        </button>
+
+        <button id="btn-contribute-modal" class="btn btn-accent" title="Learn how to add missing places or edit OpenStreetMap">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 5v14M5 12h14"/>
+          </svg>
+          <span class="btn-text">Contribute Data</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Controls & Filters Section -->
+    <section class="controls-bar">
+      <!-- Search Box -->
+      <div class="search-wrapper">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input 
+          type="text" 
+          id="search-input" 
+          placeholder="Search by name, street, locality (e.g. Hampankatta, Paint, Motor repair)..." 
+          autocomplete="off"
+          aria-label="Search places in Mangalore"
+        >
+        <button id="search-clear" class="btn-icon" aria-label="Clear search query" style="display: none;">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Category Filter Chips -->
+      <div class="category-chips-scroll">
+        <div class="category-chips" id="category-chips">
+          <button class="chip active" data-category="all">
+            <span class="chip-dot all"></span>
+            <span class="chip-label">All Categories</span>
+            <span class="chip-count" id="count-all">0</span>
+          </button>
+          <button class="chip" data-category="hardware">
+            <span class="chip-icon">🔧</span>
+            <span class="chip-label">Hardware & Supplies</span>
+            <span class="chip-count" id="count-hardware">0</span>
+          </button>
+          <button class="chip" data-category="repair">
+            <span class="chip-icon">⚙️</span>
+            <span class="chip-label">Repair & Craft</span>
+            <span class="chip-count" id="count-repair">0</span>
+          </button>
+          <button class="chip" data-category="stationery">
+            <span class="chip-icon">📚</span>
+            <span class="chip-label">Stationery & Xerox</span>
+            <span class="chip-count" id="count-stationery">0</span>
+          </button>
+          <button class="chip" data-category="pharmacy">
+            <span class="chip-icon">💊</span>
+            <span class="chip-label">Pharmacies & Clinics</span>
+            <span class="chip-count" id="count-pharmacy">0</span>
+          </button>
+          <button class="chip" data-category="food">
+            <span class="chip-icon">☕</span>
+            <span class="chip-label">Food & Snacks</span>
+            <span class="chip-count" id="count-food">0</span>
+          </button>
+          <button class="chip" data-category="toilet">
+            <span class="chip-icon">🚻</span>
+            <span class="chip-label">Public Toilets & Water</span>
+            <span class="chip-count" id="count-toilet">0</span>
+          </button>
+          <button class="chip" data-category="transit">
+            <span class="chip-icon">🚌</span>
+            <span class="chip-label">Bus Stops</span>
+            <span class="chip-count" id="count-transit">0</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Content Workspace (Split Layout) -->
+    <main class="main-layout">
+      
+      <!-- Side Directory Panel -->
+      <aside class="sidebar" id="sidebar">
+        <!-- Sidebar Header with Stats & Sort -->
+        <div class="sidebar-header">
+          <div class="results-meta">
+            <span class="results-count" id="results-count">Showing 0 places</span>
+            <span class="data-status-badge" id="data-status-badge">
+              <span class="status-indicator live"></span>
+              <span id="data-status-text">Loading OSM...</span>
+            </span>
+          </div>
+          
+          <div class="sidebar-actions">
+            <select id="sort-select" class="sort-dropdown" aria-label="Sort results">
+              <option value="default">Default Order</option>
+              <option value="name">Name (A-Z)</option>
+              <option value="distance" disabled id="sort-distance-opt">Nearest First (enable location)</option>
+            </select>
+
+            <button id="btn-toggle-view" class="btn-icon mobile-only" title="Toggle Map View">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/>
+                <line x1="8" y1="2" x2="8" y2="18"/>
+                <line x1="16" y1="6" x2="16" y2="22"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Quick Civic Notice Banner -->
+        <div class="civic-notice">
+          <div class="notice-icon">💡</div>
+          <div class="notice-content">
+            <p><strong>Know a shop or facility missing in Kudla?</strong> You can add it directly to OpenStreetMap in seconds.</p>
+            <button class="link-btn" id="notice-add-btn">Add Place via OSM iD Editor &rarr;</button>
+          </div>
+        </div>
+
+        <!-- Scrollable Place List -->
+        <div class="places-list" id="places-list" role="list">
+          <!-- Populated dynamically by script.js -->
+        </div>
+
+        <!-- Empty / Error States -->
+        <div class="empty-state" id="empty-state" style="display: none;">
+          <div class="empty-icon">🔍</div>
+          <h3 class="empty-title">No matching places found</h3>
+          <p class="empty-desc">Try changing category filters or searching for another keyword.</p>
+          <button id="btn-reset-filters" class="btn btn-outline">Reset all filters</button>
+        </div>
+
+        <!-- Sidebar Footer -->
+        <footer class="sidebar-footer">
+          <p>
+            Data &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a>.
+            Built for Kudla civic mapping community.
+          </p>
+        </footer>
+      </aside>
+
+      <!-- Interactive Map Panel -->
+      <section class="map-wrapper" id="map-wrapper">
+        <div id="map"></div>
+
+        <!-- Floating Map Quick Actions -->
+        <div class="map-floating-controls">
+          <button id="btn-add-here" class="map-float-btn" title="Add a missing place at current map center">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 5v14M5 12h14"/>
+            </svg>
+            <span>Add Place at Center</span>
+          </button>
+          <button id="btn-osm-notes" class="map-float-btn secondary" title="Report a map issue / note to OSM mappers">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            </svg>
+            <span>Report Issue</span>
+          </button>
+        </div>
+
+        <!-- Notification Toast -->
+        <div id="toast" class="toast" role="alert" aria-live="polite"></div>
+      </section>
+    </main>
+
+    <!-- Contribute Modal -->
+    <div class="modal-backdrop" id="contribute-modal" style="display: none;">
+      <div class="modal-card">
+        <div class="modal-header">
+          <div class="modal-title-group">
+            <span class="modal-icon">🗺️</span>
+            <div>
+              <h2 class="modal-title">Contribute to OpenStreetMap Kudla</h2>
+              <p class="modal-subtitle">Help build the most accurate, open community directory for Mangalore</p>
+            </div>
+          </div>
+          <button class="modal-close-btn" id="btn-close-modal" aria-label="Close modal">&times;</button>
+        </div>
+
+        <div class="modal-body">
+          <div class="contribute-intro">
+            <p><strong>Kudla Suttu</strong> pulls real-time civic data directly from <strong>OpenStreetMap (OSM)</strong> — the free, editable world map. Any detail you add or fix on OSM becomes permanently available to everyone across Mangalore and the world.</p>
+          </div>
+
+          <div class="contribution-steps">
+            <div class="step-card">
+              <div class="step-num">1</div>
+              <div class="step-details">
+                <h4>Open the iD Editor</h4>
+                <p>Click below to launch OpenStreetMap's built-in web editor centered on Mangalore. You can sign up with your Google, GitHub, or OSM account in 1 minute.</p>
+              </div>
+            </div>
+
+            <div class="step-card">
+              <div class="step-num">2</div>
+              <div class="step-details">
+                <h4>Add a Point or Building</h4>
+                <p>Click <strong>"Point"</strong> at the top of the editor, place it on your shop or facility, and search for the feature type.</p>
+              </div>
+            </div>
+
+            <div class="step-card">
+              <div class="step-num">3</div>
+              <div class="step-details">
+                <h4>Add Accurate Tags & Multilingual Names</h4>
+                <p>Fill in the name, street address, contact phone, opening hours, and add Kannada/Tulu name fields: <code>name:kn</code> and <code>name:tcy</code>.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="osm-tags-reference">
+            <h4>Common OSM Tags for Kudla Essentials</h4>
+            <div class="tags-grid">
+              <div class="tag-item">
+                <span class="tag-code">shop=hardware</span>
+                <span class="tag-desc">Hardware & building tools</span>
+              </div>
+              <div class="tag-item">
+                <span class="tag-code">shop=electrical</span>
+                <span class="tag-desc">Electrical items & wiring</span>
+              </div>
+              <div class="tag-item">
+                <span class="tag-code">shop=plumbing</span>
+                <span class="tag-desc">Plumbing pipes & sanitaryware</span>
+              </div>
+              <div class="tag-item">
+                <span class="tag-code">shop=paint</span>
+                <span class="tag-desc">Paints & painting supplies</span>
+              </div>
+              <div class="tag-item">
+                <span class="tag-code">craft=shoemaker / tailor</span>
+                <span class="tag-desc">Shoe repairs & stitching</span>
+              </div>
+              <div class="tag-item">
+                <span class="tag-code">amenity=toilets</span>
+                <span class="tag-desc">Public or pay-and-use toilets</span>
+              </div>
+              <div class="tag-item">
+                <span class="tag-code">amenity=drinking_water</span>
+                <span class="tag-desc">Public clean drinking water point</span>
+              </div>
+              <div class="tag-item">
+                <span class="tag-code">name:kn=* / name:tcy=*</span>
+                <span class="tag-desc">Kannada / Tulu place names</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-cta-group">
+            <a id="modal-osm-edit-link" href="https://www.openstreetmap.org/edit#map=15/12.9141/74.8560" target="_blank" rel="noopener" class="btn btn-accent btn-lg">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                <polyline points="15 3 21 3 21 9"/>
+                <line x1="10" y1="14" x2="21" y2="3"/>
+              </svg>
+              Open OSM iD Editor for Current View
+            </a>
+            <a href="https://learnosm.org/en/beginner/id-editor/" target="_blank" rel="noopener" class="btn btn-outline btn-lg">
+              LearnOSM Beginner Guide &rarr;
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  
+  <!-- Main Application Logic -->
+  <script src="script.js"></script>
+</body>
+</html>
