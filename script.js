@@ -1,5 +1,5 @@
 /**
- * Kudla Suttu - Bespoke Coastal Mangalore Explorer Engine
+ * Kudla Suttu - Open Local Utility Map Engine
  * Powered by OpenStreetMap & Leaflet.js
  */
 
@@ -27,31 +27,31 @@ const MANGALORE_CONFIG = {
 const CATEGORIES = {
   hardware: {
     id: 'hardware',
-    name: 'Hardware & Tools',
+    name: 'Hardware',
     icon: '🔧',
     color: '#ba5122'
   },
   repair: {
     id: 'repair',
-    name: 'Repair Services',
+    name: 'Repair',
     icon: '⚙️',
-    color: '#236bb0'
+    color: '#226bb0'
   },
   stationery: {
     id: 'stationery',
-    name: 'Stationery & Xerox',
+    name: 'Xerox & Print',
     icon: '📚',
     color: '#1e7049'
   },
   pharmacy: {
     id: 'pharmacy',
-    name: 'Pharmacies',
+    name: 'Pharmacy',
     icon: '💊',
     color: '#be2626'
   },
   toilet: {
     id: 'toilet',
-    name: 'Public Toilets',
+    name: 'Toilets',
     icon: '🚻',
     color: '#007d96'
   },
@@ -69,15 +69,15 @@ const CATEGORIES = {
   },
   food: {
     id: 'food',
-    name: 'Budget Food',
+    name: 'Food',
     icon: '☕',
     color: '#cc5e1b'
   }
 };
 
-// Curated Seed Data for instant offline/guaranteed availability
+// Curated Seed Data for guaranteed availability & fast startup
 const MANGALORE_SEED_DATA = [
-  // Hardware & Supplies
+  // Hardware
   {
     id: 'seed-h1',
     osmType: 'node',
@@ -139,7 +139,7 @@ const MANGALORE_SEED_DATA = [
     tags: { 'shop': 'hardware' }
   },
 
-  // Repair Services
+  // Repair
   {
     id: 'seed-r1',
     osmType: 'node',
@@ -323,7 +323,7 @@ const MANGALORE_SEED_DATA = [
     tags: { 'amenity': 'drinking_water' }
   },
 
-  // Bus Stops & Transit
+  // Bus Stops
   {
     id: 'seed-b1',
     osmType: 'node',
@@ -366,7 +366,7 @@ const MANGALORE_SEED_DATA = [
     tags: { 'highway': 'bus_stop' }
   },
 
-  // Budget Food
+  // Food
   {
     id: 'seed-f1',
     osmType: 'node',
@@ -399,7 +399,7 @@ const MANGALORE_SEED_DATA = [
   }
 ];
 
-// App State
+// State
 const state = {
   places: [],
   filteredPlaces: [],
@@ -412,17 +412,16 @@ const state = {
   osmSource: 'cached'
 };
 
-// Map & Layer References
+// Map References
 let map = null;
 let markersLayerGroup = null;
 let userMarker = null;
 const markerMap = new Map();
 
 /**
- * Initialize on DOM Ready
+ * Initialize on DOM Loaded
  */
 document.addEventListener('DOMContentLoaded', () => {
-  initScrollEntrance();
   initMap();
   initPlacesData();
   bindUIEvents();
@@ -431,63 +430,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /**
- * 1. THEATRICAL PARCHMENT SCROLL ENTRANCE LOGIC
- */
-function initScrollEntrance() {
-  const overlay = document.getElementById('scroll-overlay');
-  const scrollEl = document.getElementById('parchment-scroll');
-  const btnPullThread = document.getElementById('btn-pull-thread');
-  const btnUnrollExplore = document.getElementById('btn-unroll-explore');
-  const skipCheckbox = document.getElementById('skip-scroll-next-time');
-  const btnReopenScroll = document.getElementById('btn-reopen-scroll');
-
-  const hasSkipped = localStorage.getItem('kudla_skip_scroll') === 'true';
-
-  if (hasSkipped) {
-    overlay.classList.add('hidden');
-  } else {
-    overlay.classList.remove('hidden');
-    scrollEl.classList.add('rolled');
-    scrollEl.classList.remove('unrolled');
-  }
-
-  // Pull ribbon action -> unroll scroll
-  function unrollScroll() {
-    scrollEl.classList.remove('rolled');
-    scrollEl.classList.add('unrolled');
-  }
-
-  btnPullThread.addEventListener('click', unrollScroll);
-
-  // Unroll & Explore map action -> dismiss overlay into map
-  btnUnrollExplore.addEventListener('click', () => {
-    if (skipCheckbox.checked) {
-      localStorage.setItem('kudla_skip_scroll', 'true');
-    }
-    overlay.classList.add('hidden');
-    if (map) {
-      map.invalidateSize();
-      map.flyTo(MANGALORE_CONFIG.center, MANGALORE_CONFIG.defaultZoom, { duration: 1.2 });
-    }
-  });
-
-  // Reopen scroll anytime from topbar badge
-  btnReopenScroll.addEventListener('click', () => {
-    overlay.classList.remove('hidden');
-    scrollEl.classList.remove('rolled');
-    scrollEl.classList.add('unrolled');
-  });
-
-  // Clicking backdrop dims closes if already unrolled
-  overlay.addEventListener('click', (e) => {
-    if (e.target.classList.contains('scroll-backdrop-dim') && scrollEl.classList.contains('unrolled')) {
-      overlay.classList.add('hidden');
-    }
-  });
-}
-
-/**
- * 2. LEAFLET MAP INITIALIZATION
+ * Setup Leaflet Map
  */
 function initMap() {
   map = L.map('map', {
@@ -495,19 +438,14 @@ function initMap() {
     zoom: MANGALORE_CONFIG.defaultZoom,
     minZoom: MANGALORE_CONFIG.minZoom,
     maxZoom: MANGALORE_CONFIG.maxZoom,
-    zoomControl: false // custom position
+    zoomControl: true
   });
 
-  // Add Zoom Control on bottom-right
-  L.control.zoom({ position: 'bottomright' }).addTo(map);
-
-  // OSM Standard Layer
   const osmStandard = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors',
     maxZoom: 19
   }).addTo(map);
 
-  // Carto Positron Light Layer
   const cartoPositron = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
     attribution: '&copy; <a href="https://carto.com/">CARTO</a> &copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>',
     maxZoom: 19
@@ -525,7 +463,7 @@ function initMap() {
 }
 
 /**
- * 3. PLACES DATA INITIALIZATION & OVERPASS FETCH
+ * Places Data initialization & Overpass query
  */
 function initPlacesData() {
   state.places = [...MANGALORE_SEED_DATA];
@@ -535,7 +473,7 @@ function initPlacesData() {
 
 async function fetchOverpassData() {
   state.isLoadingOSM = true;
-  updateStatusBadge('loading', 'Syncing OpenStreetMap...');
+  updateStatusBadge('loading', 'Syncing live OSM...');
 
   const { south, west, north, east } = MANGALORE_CONFIG.bbox;
   const bboxStr = `${south},${west},${north},${east}`;
@@ -551,7 +489,7 @@ async function fetchOverpassData() {
       node["shop"~"^(electronics_repair|mobile_phone|car_repair|bicycle_repair|motorcycle_repair)$"](${bboxStr});
       node["craft"~"^(shoemaker|tailor|electrician|plumber|carpenter)$"](${bboxStr});
 
-      // Stationery
+      // Stationery & Xerox
       node["shop"~"^(stationery|books|copyshop)$"](${bboxStr});
 
       // Pharmacy
@@ -616,7 +554,7 @@ async function fetchOverpassData() {
     showToast(`Loaded ${state.places.length} places from OpenStreetMap!`);
   } else {
     state.osmSource = 'cached';
-    updateStatusBadge('cached', `${state.places.length} Kudla Places (Seed)`);
+    updateStatusBadge('cached', `${state.places.length} Kudla Places`);
   }
 
   renderCategoryCounts();
@@ -702,14 +640,23 @@ function fallbackName(tags, catKey) {
   if (catKey === 'repair') return 'Repair & Service Shop';
   if (catKey === 'pharmacy') return 'Pharmacy & Medical Store';
   if (catKey === 'stationery') return 'Stationery & Xerox';
-  if (catKey === 'food') return 'Local Eatery / Refreshments';
+  if (catKey === 'food') return 'Local Eatery / Food Point';
   return 'Local Utility Point';
 }
 
 /**
- * 4. UI EVENT BINDINGS
+ * UI Event Bindings
  */
 function bindUIEvents() {
+  // Start Exploring Button (smooth scroll to map)
+  const btnScrollToMap = document.getElementById('btn-scroll-to-map');
+  if (btnScrollToMap) {
+    btnScrollToMap.addEventListener('click', () => {
+      scrollToMapArea();
+    });
+  }
+
+  // Search Input
   const searchInput = document.getElementById('search-input');
   const searchClear = document.getElementById('search-clear');
 
@@ -727,16 +674,21 @@ function bindUIEvents() {
     applyFiltersAndRender();
   });
 
-  // Categories Dock chips
+  // Intro Category Chips
   document.getElementById('category-chips').addEventListener('click', (e) => {
-    const chip = e.target.closest('.dock-chip');
+    const chip = e.target.closest('.cat-chip');
     if (!chip) return;
 
-    document.querySelectorAll('.dock-chip').forEach(c => c.classList.remove('active'));
+    document.querySelectorAll('.cat-chip').forEach(c => c.classList.remove('active'));
     chip.classList.add('active');
 
     state.activeCategory = chip.dataset.category;
     applyFiltersAndRender();
+    
+    // Smooth scroll down to map on category tap if at top
+    if (window.scrollY < 120) {
+      scrollToMapArea();
+    }
   });
 
   // Sort dropdown
@@ -745,34 +697,28 @@ function bindUIEvents() {
     applyFiltersAndRender();
   });
 
-  // Drawer collapse toggle
-  const drawer = document.getElementById('places-drawer');
-  document.getElementById('btn-drawer-collapse').addEventListener('click', () => {
-    drawer.classList.toggle('collapsed');
-  });
-
   // Reset Filters in empty state
   document.getElementById('btn-reset-filters').addEventListener('click', () => {
     state.activeCategory = 'all';
     state.searchQuery = '';
     searchInput.value = '';
     searchClear.style.display = 'none';
-    document.querySelectorAll('.dock-chip').forEach(c => {
+    document.querySelectorAll('.cat-chip').forEach(c => {
       c.classList.toggle('active', c.dataset.category === 'all');
     });
     applyFiltersAndRender();
   });
 
   // Geolocation
-  document.getElementById('btn-locate').addEventListener('click', locateUser);
-
-  // Sync OSM
-  document.getElementById('btn-sync').addEventListener('click', fetchOverpassData);
+  document.getElementById('btn-intro-locate').addEventListener('click', () => {
+    locateUser();
+    scrollToMapArea();
+  });
 
   // Contribution Modal Dialog
   const modal = document.getElementById('contrib-modal');
   document.getElementById('btn-open-contrib-modal').addEventListener('click', () => modal.style.display = 'flex');
-  document.getElementById('btn-drawer-edit-osm').addEventListener('click', () => modal.style.display = 'flex');
+  document.getElementById('btn-sidebar-add-osm').addEventListener('click', () => modal.style.display = 'flex');
   document.getElementById('btn-close-modal').addEventListener('click', () => modal.style.display = 'none');
   modal.addEventListener('click', (e) => {
     if (e.target === modal) modal.style.display = 'none';
@@ -790,10 +736,33 @@ function bindUIEvents() {
     const zoom = Math.max(16, map.getZoom());
     window.open(`https://www.openstreetmap.org/note/new#map=${zoom}/${center.lat.toFixed(5)}/${center.lng.toFixed(5)}`, '_blank', 'noopener');
   });
+
+  // Mobile Drawer Toggle
+  const mobileToggleBtn = document.getElementById('btn-mobile-drawer');
+  const sidebarPanel = document.getElementById('sidebar-panel');
+  const toggleLabel = document.getElementById('mobile-toggle-label');
+
+  if (mobileToggleBtn) {
+    mobileToggleBtn.addEventListener('click', () => {
+      sidebarPanel.classList.toggle('collapsed');
+      const isCollapsed = sidebarPanel.classList.contains('collapsed');
+      toggleLabel.textContent = isCollapsed ? 'View Results List' : 'Hide Results List';
+    });
+  }
+}
+
+function scrollToMapArea() {
+  const mapSection = document.getElementById('map-section');
+  if (mapSection) {
+    mapSection.scrollIntoView({ behavior: 'smooth' });
+    setTimeout(() => {
+      if (map) map.invalidateSize();
+    }, 400);
+  }
 }
 
 /**
- * 5. FILTER, SORT & RENDER
+ * Filter, Sort, Render
  */
 function applyFiltersAndRender() {
   let list = state.places.filter(place => {
@@ -826,15 +795,15 @@ function applyFiltersAndRender() {
 
   state.filteredPlaces = list;
 
-  renderDrawerCards(list);
+  renderSidebarCards(list);
   renderMapPins(list);
   updateResultCount(list.length);
 }
 
 /**
- * 6. RENDER DRAWER CARDS
+ * Render Sidebar Cards
  */
-function renderDrawerCards(places) {
+function renderSidebarCards(places) {
   const container = document.getElementById('places-list');
   const emptyState = document.getElementById('empty-state');
 
@@ -891,7 +860,7 @@ function renderDrawerCards(places) {
               <svg class="card-row-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
               </svg>
-              <a href="tel:${escapeHTML(place.phone)}" class="card-btn-link">${escapeHTML(place.phone)}</a>
+              <a href="tel:${escapeHTML(place.phone)}" class="card-link">${escapeHTML(place.phone)}</a>
             </div>
           ` : ''}
         </div>
@@ -934,7 +903,7 @@ function renderDrawerCards(places) {
 }
 
 /**
- * 7. RENDER MAP PINS
+ * Render Map Pins
  */
 function renderMapPins(places) {
   markersLayerGroup.clearLayers();
@@ -983,7 +952,7 @@ function createPopupHTML(place) {
       <div class="popup-meta">
         ${place.street ? `<div>📍 ${escapeHTML(place.street)}</div>` : ''}
         ${place.openingHours ? `<div>🕒 ${escapeHTML(place.openingHours)}</div>` : ''}
-        ${place.phone ? `<div>📞 <a href="tel:${escapeHTML(place.phone)}" class="card-btn-link">${escapeHTML(place.phone)}</a></div>` : ''}
+        ${place.phone ? `<div>📞 <a href="tel:${escapeHTML(place.phone)}" class="card-link">${escapeHTML(place.phone)}</a></div>` : ''}
         ${place.distanceText ? `<div>🧭 <strong>${place.distanceText} from you</strong></div>` : ''}
       </div>
 
@@ -1026,7 +995,7 @@ function selectAndFocusPlace(placeId, shouldFly = true) {
 }
 
 /**
- * 8. GEOLOCATION ("NEAR ME")
+ * Geolocation ("Near Me")
  */
 function locateUser() {
   if (!navigator.geolocation) {
@@ -1034,7 +1003,7 @@ function locateUser() {
     return;
   }
 
-  showToast('Pinpointing your location in Kudla...');
+  showToast('Locating your position in Mangalore...');
 
   navigator.geolocation.getCurrentPosition(
     (pos) => {
@@ -1090,7 +1059,7 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
 }
 
 /**
- * 9. UTILITIES
+ * Counts & Badges
  */
 function renderCategoryCounts() {
   const counts = { all: state.places.length };
@@ -1110,12 +1079,12 @@ function renderCategoryCounts() {
 }
 
 function updateResultCount(count) {
-  document.getElementById('results-count').textContent = count === 1 ? '1 place' : `${count} places`;
+  document.getElementById('results-count').textContent = count === 1 ? 'Showing 1 place' : `Showing ${count} places`;
 }
 
 function updateStatusBadge(type, text) {
   const pip = document.querySelector('.status-pip');
-  const textEl = document.getElementById('drawer-status-text');
+  const textEl = document.getElementById('status-text');
 
   if (pip && textEl) {
     if (type === 'live') pip.style.backgroundColor = '#10b981';
