@@ -1,12 +1,12 @@
 # Kudla Suttu | ಕುಡ್ಲ ಸುತ್ತು
 
-[![Open in Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FHanAbhi%2Fkudla-suttu)
+[![GitHub Pages Deployment](https://github.com/HanAbhi/kudla-suttu/actions/workflows/deploy.yml/badge.svg)](https://github.com/HanAbhi/kudla-suttu/actions/workflows/deploy.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-teal.svg)](LICENSE)
 [![OpenStreetMap](https://img.shields.io/badge/Data-OpenStreetMap-coral.svg)](https://www.openstreetmap.org)
 
 **Kudla Suttu** is an open-source local utility map for discovering and improving everyday places around **Mangalore (Kudla), Karnataka** using [OpenStreetMap](https://www.openstreetmap.org) (OSM) data.
 
-🌐 **Live Demo**: [https://kudla-suttu.vercel.app](https://kudla-suttu.vercel.app) *(or deploy your own in 1 click via Vercel / GitHub Pages)*
+🌐 **Live Deployed Map**: **[https://hanabhi.github.io/kudla-suttu/](https://hanabhi.github.io/kudla-suttu/)**
 
 ---
 
@@ -45,20 +45,6 @@ Proprietary maps often miss small neighbourhood repair shacks, public drinking w
 
 ---
 
-## 🚀 One-Click Deployments
-
-### Deploy with Vercel
-1. Go to [vercel.com/new](https://vercel.com/new).
-2. Connect your GitHub account and click **Import** next to `HanAbhi/kudla-suttu`.
-3. Click **Deploy**. Vercel will instantly generate a live URL (e.g. `https://kudla-suttu.vercel.app`).
-
-### Deploy with GitHub Pages
-1. Go to your repo **Settings** &rarr; **Pages** (`https://github.com/HanAbhi/kudla-suttu/settings/pages`).
-2. Under **Build and deployment > Branch**, select `main` and `/ (root)`.
-3. Click **Save**. The map will be live at `https://hanabhi.github.io/kudla-suttu/` in ~1 minute.
-
----
-
 ## 🤝 How to Contribute Local Data
 
 ### Step 1: Open OpenStreetMap iD Editor
@@ -80,6 +66,22 @@ phone=+91 824 2218900
 opening_hours=Mo-Sa 08:30-20:00
 wheelchair=yes
 ```
+
+---
+
+## 🚀 Running Locally
+
+Kudla Suttu is a static frontend with **no build step** and **no backend required**.
+
+```bash
+# Clone the repository
+git clone https://github.com/HanAbhi/kudla-suttu.git
+cd kudla-suttu
+
+# Start any static server (Python or Node.js)
+python -m http.server 8085
+```
+Open **`http://localhost:8085`** in your browser.
 
 ---
 
