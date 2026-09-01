@@ -1,29 +1,30 @@
 /* ========================================================
-   Kudla Suttu - Coastal Mangalore Design System
+   Kudla Suttu - Google Stitch Spec Design Tokens & Styles
    ======================================================== */
 
 :root {
-  /* Coastal Mangalore Palette: Teal, Coral, Sand, Charcoal */
-  --teal-900: #08373b;
-  --teal-800: #0d5c63;
-  --teal-700: #13757e;
-  --teal-600: #1a8f9a;
-  --teal-100: #e2f2f4;
+  /* Stitch Color Tokens: Arabian Sea Teal & Coastal Coral */
+  --teal-950: #041f23;
+  --teal-900: #08373d;
+  --teal-800: #0d545c;
+  --teal-700: #14727d;
+  --teal-600: #1a8f9c;
+  --teal-100: #e1f2f4;
   --teal-50:  #f0f8f9;
 
-  --coral-700: #be482e;
-  --coral-600: #e06346;
-  --coral-500: #ef775c;
+  --coral-700: #b83f25;
+  --coral-600: #d95338;
+  --coral-500: #eb694e;
   --coral-100: #fdeee9;
   --coral-50:  #fff7f5;
 
-  --sand-900: #2a2621;
-  --sand-700: #565045;
-  --sand-500: #8c8375;
-  --sand-300: #d6cebf;
-  --sand-200: #e7e0d3;
-  --sand-100: #f4eee3;
-  --sand-50:  #fbf9f4;
+  --sand-900: #26221c;
+  --sand-700: #544d41;
+  --sand-500: #887e6d;
+  --sand-300: #d4cbba;
+  --sand-200: #e6dfce;
+  --sand-100: #f3ede1;
+  --sand-50:  #faf7f2;
 
   --charcoal-900: #181d24;
   --charcoal-800: #252c36;
@@ -59,15 +60,15 @@
   --cat-food: #cc5e1b;
   --cat-food-bg: #fef3eb;
 
-  /* Dimensions & Shapes */
+  /* Dimensions & Geometry */
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 14px;
   --radius-full: 9999px;
 
-  --shadow-sm: 0 1px 3px rgba(8, 55, 59, 0.05);
-  --shadow-md: 0 4px 12px rgba(8, 55, 59, 0.08);
-  --shadow-lg: 0 10px 25px -4px rgba(8, 55, 59, 0.12);
+  --shadow-sm: 0 1px 2px rgba(8, 55, 61, 0.05);
+  --shadow-md: 0 4px 12px rgba(8, 55, 61, 0.08);
+  --shadow-lg: 0 12px 28px -4px rgba(8, 55, 61, 0.14);
 
   --font-main: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   --font-kn: 'Noto Sans Kannada', var(--font-main);
@@ -100,7 +101,7 @@ body {
 .intro-section {
   background-color: #ffffff;
   border-bottom: 1px solid var(--border-subtle);
-  padding: 1.25rem 1.5rem 1rem 1.5rem;
+  padding: 1.15rem 1.5rem 0.95rem 1.5rem;
   box-shadow: var(--shadow-sm);
   position: relative;
   z-index: 50;
@@ -111,7 +112,7 @@ body {
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.65rem;
 }
 
 /* Top Brand Row */
@@ -122,9 +123,15 @@ body {
   gap: 1rem;
 }
 
+.brand-group {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
 .brand-icon-box {
-  width: 38px;
-  height: 38px;
+  width: 36px;
+  height: 36px;
   background: linear-gradient(135deg, var(--teal-800), var(--teal-700));
   border-radius: var(--radius-md);
   display: flex;
@@ -140,7 +147,7 @@ body {
 }
 
 .brand-heading {
-  font-size: 1.25rem;
+  font-size: 1.22rem;
   font-weight: 800;
   letter-spacing: -0.02em;
   color: var(--teal-900);
@@ -158,16 +165,16 @@ body {
 }
 
 .brand-tagline {
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   color: var(--charcoal-500);
   font-weight: 600;
-  margin-top: 0.1rem;
+  margin-top: 0.05rem;
 }
 
 .intro-quick-actions {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.45rem;
 }
 
 /* Button System */
@@ -182,15 +189,19 @@ body {
   border-radius: var(--radius-md);
   border: 1px solid transparent;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all 0.16s ease;
   font-family: inherit;
   text-decoration: none;
   white-space: nowrap;
 }
 
+.btn:active {
+  transform: translateY(1px);
+}
+
 .btn-sm {
   padding: 0.35rem 0.7rem;
-  font-size: 0.76rem;
+  font-size: 0.75rem;
 }
 
 .btn-lg {
@@ -202,7 +213,7 @@ body {
 .btn-coral {
   background-color: var(--coral-600);
   color: #ffffff;
-  box-shadow: 0 2px 6px rgba(224, 99, 70, 0.25);
+  box-shadow: 0 2px 6px rgba(217, 83, 56, 0.25);
 }
 
 .btn-coral:hover {
@@ -222,7 +233,7 @@ body {
 
 /* Description */
 .intro-description {
-  font-size: 0.86rem;
+  font-size: 0.85rem;
   color: var(--charcoal-700);
   line-height: 1.4;
 }
@@ -241,7 +252,7 @@ body {
 .intro-category-chips {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.35rem;
   width: max-content;
 }
 
@@ -249,11 +260,11 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  padding: 0.35rem 0.75rem;
+  padding: 0.32rem 0.7rem;
   background-color: var(--sand-100);
   border: 1px solid var(--sand-200);
   border-radius: var(--radius-full);
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   font-weight: 600;
   color: var(--charcoal-700);
   cursor: pointer;
@@ -264,28 +275,29 @@ body {
 .cat-chip:hover {
   background-color: var(--sand-200);
   color: var(--charcoal-900);
+  transform: translateY(-1px);
 }
 
 .cat-chip.active {
   background-color: var(--teal-800);
   border-color: var(--teal-900);
   color: #ffffff;
-  box-shadow: 0 2px 6px rgba(13, 92, 99, 0.25);
+  box-shadow: 0 2px 6px rgba(13, 84, 92, 0.25);
 }
 
 .chip-pip {
-  width: 7px;
-  height: 7px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
   background-color: var(--coral-500);
 }
 
 .chip-count {
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   font-weight: 700;
   padding: 0.05rem 0.35rem;
   border-radius: var(--radius-full);
-  background-color: rgba(0, 0, 0, 0.07);
+  background-color: rgba(0, 0, 0, 0.06);
 }
 
 .cat-chip.active .chip-count {
@@ -315,13 +327,22 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  box-shadow: 0 2px 6px rgba(8, 55, 59, 0.25);
-  transition: all 0.15s ease;
+  box-shadow: 0 2px 6px rgba(8, 55, 61, 0.22);
+  transition: all 0.16s ease;
 }
 
 .btn-start-exploring:hover {
   background: linear-gradient(135deg, var(--teal-800), var(--teal-700));
   transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(8, 55, 61, 0.3);
+}
+
+.btn-start-exploring:hover .arrow-down {
+  transform: translateY(2px);
+}
+
+.arrow-down {
+  transition: transform 0.15s ease;
 }
 
 /* 3-Step Contribution Strip */
@@ -329,7 +350,7 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
-  padding: 0.3rem 0.75rem;
+  padding: 0.28rem 0.75rem;
   background-color: var(--sand-50);
   border: 1px solid var(--sand-200);
   border-radius: var(--radius-full);
@@ -345,8 +366,8 @@ body {
 }
 
 .step-dot {
-  width: 17px;
-  height: 17px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
   background-color: var(--coral-600);
   color: #ffffff;
@@ -359,7 +380,7 @@ body {
 
 .strip-arrow {
   color: var(--sand-500);
-  font-size: 0.8rem;
+  font-size: 0.78rem;
 }
 
 /* ========================================================
@@ -367,7 +388,7 @@ body {
    ======================================================== */
 .map-workspace {
   display: flex;
-  height: calc(100vh - 180px);
+  height: calc(100vh - 170px);
   min-height: 520px;
   width: 100vw;
   position: relative;
@@ -377,7 +398,7 @@ body {
 
 /* Left Sidebar Panel */
 .sidebar-panel {
-  width: 400px;
+  width: 390px;
   background-color: #ffffff;
   border-right: 1px solid var(--border-subtle);
   display: flex;
@@ -413,7 +434,7 @@ body {
 #search-input {
   width: 100%;
   height: 38px;
-  padding: 0 2.2rem 0 2.3rem;
+  padding: 0 3.2rem 0 2.3rem;
   font-size: 0.85rem;
   font-family: inherit;
   background-color: var(--sand-50);
@@ -430,9 +451,22 @@ body {
   box-shadow: 0 0 0 3px var(--teal-100);
 }
 
+.search-kbd-hint {
+  position: absolute;
+  right: 0.75rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--charcoal-500);
+  background-color: var(--sand-100);
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+  border: 1px solid var(--sand-200);
+  pointer-events: none;
+}
+
 .clear-btn {
   position: absolute;
-  right: 0.5rem;
+  right: 1.8rem;
   background: none;
   border: none;
   color: var(--charcoal-500);
@@ -469,7 +503,7 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 0.3rem;
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   color: var(--charcoal-500);
 }
 
@@ -481,7 +515,7 @@ body {
 }
 
 .sort-dropdown {
-  padding: 0.25rem 0.45rem;
+  padding: 0.22rem 0.45rem;
   font-size: 0.74rem;
   font-family: inherit;
   font-weight: 600;
@@ -520,11 +554,12 @@ body {
   border: 1px solid var(--border-card);
   border-radius: var(--radius-md);
   padding: 0.75rem 0.85rem;
-  transition: all 0.15s ease;
+  transition: all 0.16s ease;
   cursor: pointer;
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
+  position: relative;
 }
 
 .place-card:hover {
@@ -817,14 +852,14 @@ body {
   background-color: var(--coral-600);
   border: 3px solid #ffffff;
   border-radius: 50%;
-  box-shadow: 0 0 0 4px rgba(224, 99, 70, 0.35);
+  box-shadow: 0 0 0 4px rgba(217, 83, 56, 0.35);
   animation: pulse 1.8s infinite;
 }
 
 @keyframes pulse {
-  0% { box-shadow: 0 0 0 0 rgba(224, 99, 70, 0.6); }
-  70% { box-shadow: 0 0 0 14px rgba(224, 99, 70, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(224, 99, 70, 0); }
+  0% { box-shadow: 0 0 0 0 rgba(217, 83, 56, 0.6); }
+  70% { box-shadow: 0 0 0 14px rgba(217, 83, 56, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(217, 83, 56, 0); }
 }
 
 /* Custom Leaflet Popups */
@@ -911,7 +946,7 @@ body {
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  background-color: rgba(8, 55, 59, 0.65);
+  background-color: rgba(8, 55, 61, 0.65);
   backdrop-filter: blur(4px);
   z-index: 1000;
   display: flex;

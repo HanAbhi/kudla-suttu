@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kudla Suttu | ಕುಡ್ಲ ಸುತ್ತು - Open Local Utility Map for Mangalore</title>
+  <title>Kudla Suttu | ಕುಡ್ಲ ಸುತ್ತು - Mangalore Local Utility Map</title>
   <meta name="description" content="Open local utility map for Mangalore (Kudla), Karnataka. Find hardware, repairs, xerox, pharmacies, public toilets, drinking water, bus stops, and budget food using OpenStreetMap.">
   
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+Kannada:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+Kannada:wght@400;600;700;800&display=swap" rel="stylesheet">
   
   <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
@@ -20,24 +20,26 @@
 <body>
 
   <!-- ========================================================
-       COMPACT POLISHED INTRO HERO (CIVIC & CLEAN)
+       1. COMPACT POLISHED INTRO HERO SECTION
        ======================================================== -->
   <header class="intro-section" id="intro-section">
     <div class="intro-container">
       
       <!-- Top Brand Row -->
       <div class="intro-brand-row">
-        <div class="brand-icon-box">
-          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z"/>
-            <circle cx="12" cy="10" r="3"/>
-          </svg>
-        </div>
-        <div class="brand-text-wrap">
-          <h1 class="brand-heading">
-            Kudla Suttu <span class="brand-kn-text">ಕುಡ್ಲ ಸುತ್ತು</span>
-          </h1>
-          <p class="brand-tagline">Open local utility map for Mangalore</p>
+        <div class="brand-group">
+          <div class="brand-icon-box">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z"/>
+              <circle cx="12" cy="10" r="3"/>
+            </svg>
+          </div>
+          <div class="brand-text-wrap">
+            <h1 class="brand-heading">
+              Kudla Suttu <span class="brand-kn-text">ಕುಡ್ಲ ಸುತ್ತು</span>
+            </h1>
+            <p class="brand-tagline">Open local utility map for Mangalore</p>
+          </div>
         </div>
 
         <div class="intro-quick-actions">
@@ -48,6 +50,9 @@
             <span>Near Me</span>
           </button>
           <button id="btn-open-contrib-modal" class="btn btn-sm btn-coral" title="Learn how to add missing places to OpenStreetMap">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2">
+              <path d="M12 5v14M5 12h14"/>
+            </svg>
             <span>Contribute to OSM</span>
           </button>
         </div>
@@ -63,87 +68,85 @@
         <div class="intro-category-chips" id="category-chips">
           <button class="cat-chip active" data-category="all">
             <span class="chip-pip"></span>
-            <span>All Places</span>
+            <span class="chip-label">All Places</span>
             <span class="chip-count" id="count-all">0</span>
           </button>
           <button class="cat-chip" data-category="hardware">
-            <span>🔧</span>
-            <span>Hardware</span>
+            <span class="chip-emoji">🔧</span>
+            <span class="chip-label">Hardware</span>
             <span class="chip-count" id="count-hardware">0</span>
           </button>
           <button class="cat-chip" data-category="repair">
-            <span>⚙️</span>
-            <span>Repair</span>
+            <span class="chip-emoji">⚙️</span>
+            <span class="chip-label">Repair</span>
             <span class="chip-count" id="count-repair">0</span>
           </button>
           <button class="cat-chip" data-category="stationery">
-            <span>📚</span>
-            <span>Xerox & Print</span>
+            <span class="chip-emoji">📚</span>
+            <span class="chip-label">Xerox & Print</span>
             <span class="chip-count" id="count-stationery">0</span>
           </button>
           <button class="cat-chip" data-category="pharmacy">
-            <span>💊</span>
-            <span>Pharmacy</span>
+            <span class="chip-emoji">💊</span>
+            <span class="chip-label">Pharmacy</span>
             <span class="chip-count" id="count-pharmacy">0</span>
           </button>
           <button class="cat-chip" data-category="toilet">
-            <span>🚻</span>
-            <span>Toilets</span>
+            <span class="chip-emoji">🚻</span>
+            <span class="chip-label">Toilets</span>
             <span class="chip-count" id="count-toilet">0</span>
           </button>
           <button class="cat-chip" data-category="water">
-            <span>💧</span>
-            <span>Drinking Water</span>
+            <span class="chip-emoji">💧</span>
+            <span class="chip-label">Drinking Water</span>
             <span class="chip-count" id="count-water">0</span>
           </button>
           <button class="cat-chip" data-category="bus">
-            <span>🚌</span>
-            <span>Bus Stops</span>
+            <span class="chip-emoji">🚌</span>
+            <span class="chip-label">Bus Stops</span>
             <span class="chip-count" id="count-bus">0</span>
           </button>
           <button class="cat-chip" data-category="food">
-            <span>☕</span>
-            <span>Food</span>
+            <span class="chip-emoji">☕</span>
+            <span class="chip-label">Food</span>
             <span class="chip-count" id="count-food">0</span>
           </button>
         </div>
       </div>
 
-      <!-- Bottom Bar: Start Exploring Button + 3-Step Contribution Strip -->
+      <!-- Bottom Row: Start Exploring Action + 3-Step Contribution Strip -->
       <div class="intro-bottom-row">
-        
         <button id="btn-scroll-to-map" class="btn-start-exploring">
           <span>Start exploring</span>
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" class="arrow-down">
             <polyline points="6 9 12 15 18 9"/>
           </svg>
         </button>
 
-        <!-- 3-Step Contribution Strip -->
+        <!-- 3-Step Civic Contribution Strip -->
         <div class="contribution-strip" title="How community mapping works in Kudla">
           <div class="strip-step">
             <span class="step-dot">1</span>
-            <span>Find places</span>
+            <span class="step-txt">Find places</span>
           </div>
           <span class="strip-arrow">&rarr;</span>
           <div class="strip-step">
             <span class="step-dot">2</span>
-            <span>Spot missing data</span>
+            <span class="step-txt">Spot missing data</span>
           </div>
           <span class="strip-arrow">&rarr;</span>
           <div class="strip-step">
             <span class="step-dot">3</span>
-            <span>Improve OSM</span>
+            <span class="step-txt">Improve OSM</span>
           </div>
         </div>
-
       </div>
 
     </div>
   </header>
 
   <!-- ========================================================
-       MAIN MAP & DIRECTORY WORKSPACE
+       2. MAIN MAP & DIRECTORY WORKSPACE
        ======================================================== -->
   <main class="map-workspace" id="map-section">
     
@@ -159,11 +162,12 @@
           <input 
             type="text" 
             id="search-input" 
-            placeholder="Search by name, street (e.g. Hampankatta, Paint, Xerox)..." 
+            placeholder="Search Kudla utilities (e.g. Hampankatta, Paint, Xerox)..." 
             autocomplete="off"
             aria-label="Search places in Mangalore"
           >
           <button id="search-clear" class="clear-btn" aria-label="Clear search" style="display: none;">&times;</button>
+          <span class="search-kbd-hint" title="Press Ctrl + K to focus search">/</span>
         </div>
       </div>
 
@@ -200,7 +204,7 @@
       <!-- Sticky Footer inside Sidebar -->
       <footer class="sidebar-footer">
         <div class="footer-contrib-text">
-          <span>Know a missing shop or water tap?</span>
+          <span>Notice a missing shop or water tap?</span>
           <button id="btn-sidebar-add-osm" class="footer-link-btn">Add to OpenStreetMap &rarr;</button>
         </div>
         <div class="footer-copy">
@@ -248,7 +252,7 @@
   </main>
 
   <!-- ========================================================
-       CONTRIBUTION & TAGGING GUIDE MODAL
+       3. CONTRIBUTION & TAGGING GUIDE MODAL
        ======================================================== -->
   <div class="modal-backdrop" id="contrib-modal" style="display: none;">
     <div class="modal-card">

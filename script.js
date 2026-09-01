@@ -1,5 +1,5 @@
 /**
- * Kudla Suttu - Open Local Utility Map Engine
+ * Kudla Suttu - Open Local Utility Map Engine (Stitch Spec)
  * Powered by OpenStreetMap & Leaflet.js
  */
 
@@ -75,7 +75,7 @@ const CATEGORIES = {
   }
 };
 
-// Curated Seed Data for guaranteed availability & fast startup
+// Curated Seed Data for instant offline/guaranteed availability
 const MANGALORE_SEED_DATA = [
   // Hardware
   {
@@ -293,7 +293,7 @@ const MANGALORE_SEED_DATA = [
     tags: { 'amenity': 'toilets' }
   },
 
-  // Drinking Water Points
+  // Drinking Water
   {
     id: 'seed-w1',
     osmType: 'node',
@@ -399,7 +399,7 @@ const MANGALORE_SEED_DATA = [
   }
 ];
 
-// State
+// App State
 const state = {
   places: [],
   filteredPlaces: [],
@@ -453,7 +453,7 @@ function initMap() {
 
   L.control.layers({
     'OpenStreetMap Standard': osmStandard,
-    'Carto Light': cartoPositron
+    'Carto Light Clean': cartoPositron
   }, null, { position: 'topright' }).addTo(map);
 
   markersLayerGroup = L.layerGroup().addTo(map);
@@ -656,6 +656,16 @@ function bindUIEvents() {
     });
   }
 
+  // Keyboard shortcut '/' to search
+  document.addEventListener('keydown', (e) => {
+    if (e.key === '/' && document.activeElement.tagName !== 'INPUT') {
+      e.preventDefault();
+      const searchInput = document.getElementById('search-input');
+      searchInput.focus();
+      scrollToMapArea();
+    }
+  });
+
   // Search Input
   const searchInput = document.getElementById('search-input');
   const searchClear = document.getElementById('search-clear');
@@ -674,7 +684,7 @@ function bindUIEvents() {
     applyFiltersAndRender();
   });
 
-  // Intro Category Chips
+  // Category Chips (Intro row)
   document.getElementById('category-chips').addEventListener('click', (e) => {
     const chip = e.target.closest('.cat-chip');
     if (!chip) return;
@@ -685,7 +695,7 @@ function bindUIEvents() {
     state.activeCategory = chip.dataset.category;
     applyFiltersAndRender();
     
-    // Smooth scroll down to map on category tap if at top
+    // Smooth scroll to map if at top of page
     if (window.scrollY < 120) {
       scrollToMapArea();
     }
@@ -757,7 +767,7 @@ function scrollToMapArea() {
     mapSection.scrollIntoView({ behavior: 'smooth' });
     setTimeout(() => {
       if (map) map.invalidateSize();
-    }, 400);
+    }, 380);
   }
 }
 
